@@ -1,13 +1,13 @@
-import fs from 'fs-extra'
+import { Application } from 'express'
+import fs from 'fs'
 import http from 'http'
 import https from 'https'
-import { Application } from 'express'
-import { Identifier } from './src/di/identifiers'
-import { DIContainer } from './src/di/di'
-import { ILogger } from './src/utils/custom.logger'
-import { BackgroundService } from './src/background/background.service'
-import { Default } from './src/utils/default'
 import { App } from './src/app'
+import { BackgroundService } from './src/background/background.service'
+import { DIContainer } from './src/di/di'
+import { Identifier } from './src/di/identifiers'
+import { ILogger } from './src/utils/custom.logger'
+import { Default } from './src/utils/default'
 
 /**
  *  Create the .env file in the root directory of your project
@@ -69,7 +69,7 @@ function initListener(): void {
     process.on('SIGINT', async () => {
         try {
             await backgroundServices.stopServices()
-        } catch (err) {
+        } catch (err: any) {
             logger.error(`There was an error stopping all background services. ${err.message}`)
         } finally {
             logger.debug('Background services successfully closed...')
