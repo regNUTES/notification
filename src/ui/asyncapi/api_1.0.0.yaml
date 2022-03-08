@@ -1,0 +1,175 @@
+asyncapi: 2.3.0
+info:
+  title: regNUTES - Notification Service
+  version: 1.0.0
+  description: >-
+    This service is responsible for sending emails on the regNUTES platform.
+  contact:
+    email: regnutes.dev@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  development:
+    description: localhost HTTPS
+    url: https://localhost:7001
+    protocol: https
+channels:
+  emails.welcome:
+    publish:
+      operationId: publishEmailWelcomeEvent
+      summary: Publish an event with welcome information from a newly registered User in the API.
+      message:
+        $ref: '#/components/messages/EmailWelcomeEvent'
+    bindings:
+      $ref: '#/components/channelBindings/EmailPublishBinding'
+  emails.reset-password:
+    publish:
+      operationId: publishEmailResetPasswordEvent
+      summary: Publish an event with information for the password reset of a User registered in the API.
+      message:
+        $ref: '#/components/messages/EmailResetPasswordEvent'
+    bindings:
+      $ref: '#/components/channelBindings/EmailPublishBinding'
+  emails.update-password:
+    publish:
+      operationId: publishEmailUpdatePasswordEvent
+      summary: Publish an event with information about a password update of a User registered in the API.
+      message:
+        $ref: '#/components/messages/EmailUpdatePasswordEvent'
+    bindings:
+      $ref: '#/components/channelBindings/EmailPublishBinding'
+components:
+  messages:
+    EmailWelcomeEvent:
+      payload:
+        type: object
+        properties:
+          event_name:
+            type: string
+            description: Event name.
+            example: 'EmailWelcomeEvent'
+          timestamp:
+            type: string
+            format: date-time
+            description: Event timestamp.
+            example: '2022-02-17T20:05:59.795Z'
+          type:
+            type: string
+            description: Event type.
+            example: 'emails'
+          email:
+            type: object
+            required:
+              - to
+              - action_url
+            properties:
+              to:
+                type: object
+                required:
+                  - name
+                  - email
+                properties:
+                  name:
+                    type: string
+                    description: User name.
+                    example: 'Maria Fernandes Araújo'
+                  email:
+                    type: string
+                    description: User email.
+                    example: 'maria.araujo@mail.com'
+              action_url:
+                type: string
+                description: Url that will forward the User from your email manager to the platform's dashboard so that he can start his experience of use.
+                example: 'http://localhost:4200'
+              password:
+                type: string
+                description: User password.
+                example: 'userpassword'
+    EmailResetPasswordEvent:
+      payload:
+        type: object
+        properties:
+          event_name:
+            type: string
+            description: Event name.
+            example: 'EmailResetPasswordEvent'
+          timestamp:
+            type: string
+            format: date-time
+            description: Event timestamp.
+            example: '2022-02-17T20:34:13.492Z'
+          type:
+            type: string
+            description: Event type.
+            example: 'emails'
+          email:
+            type: object
+            required:
+              - to
+              - action_url
+            properties:
+              to:
+                type: object
+                required:
+                  - name
+                  - email
+                properties:
+                  name:
+                    type: string
+                    description: User name.
+                    example: 'Maria Fernandes Araújo'
+                  email:
+                    type: string
+                    description: User email.
+                    example: 'maria.araujo@mail.com'
+              action_url:
+                type: string
+                description: Url that will forward the User from your email manager to the platform's dashboard so that he can reset his password.
+                example: 'http://localhost:4200/password-reset?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MjBlYWFhN2NlNGIxODE0Y2NhZGYxZjEiLCJzdWJfdHlwZSI6ImhlYWx0aHVuaXRfbWFuYWdlciIsImlzcyI6InJlZ251dGVzIiwiaWF0IjoxNjQ1MTMwMDUzLCJzY29wZSI6ImhtOnJwIiwicGFzc3dvcmRfcmVzZXQiOnRydWUsImV4cCI6MTY0NTEzMzY1M30.F63uLFR4uJgvrAZfsoy7rMfJ_4Ep_Xvm4sL-lWPzoUF0pcS1d3aPaCLiD8WbipRvK5yr1bp5MwGlugImG48fvz7NSEBJXUdqB3l6Q6_0litF1QrGp6rRRgowTTBWtR_0p7gdkyupFgBSugf-EH1TXwbhgUjOvhBKQZCNC9eFj-0sSz1kFlj1R6onEmOOrYjhvk1kpjFMCiJKCKJS0c0BnO0UKbRe7lQvmHu9ZyMIEj9XRIT5CjEkWSwj47ge6061LC1FP_6pdYoQi48bEQxBw1ynq3OnHjHQY-B4E3CpyTd3Fud_1jzgV8W5ehDsiP3aXcf0BTxGgAktKn6S96yvlA'
+    EmailUpdatePasswordEvent:
+      payload:
+        type: object
+        properties:
+          event_name:
+            type: string
+            description: Event name.
+            example: 'EmailUpdatePasswordEvent'
+          timestamp:
+            type: string
+            format: date-time
+            description: Event timestamp.
+            example: '2022-02-17T20:59:37.293Z'
+          type:
+            type: string
+            description: Event type.
+            example: 'emails'
+          email:
+            type: object
+            required:
+              - to
+            properties:
+              to:
+                type: object
+                required:
+                  - name
+                  - email
+                properties:
+                  name:
+                    type: string
+                    description: User name.
+                    example: 'Maria Fernandes Araújo'
+                  email:
+                    type: string
+                    description: User email.
+                    example: 'maria.araujo@mail.com'
+  channelBindings:
+    EmailPublishBinding:
+      amqp:
+        is: routingKey
+        exchange:
+          name: emails
+          type: topic
+          durable: true
+          autoDelete: false
+          vhost: regnutes
