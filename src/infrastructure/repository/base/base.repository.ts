@@ -8,7 +8,6 @@ import { IEntityMapper } from '../../port/entity.mapper.interface'
 import { IQuery } from '../../../application/port/query.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { Query } from '../query/query'
-
 /**
  * Base implementation of the repository.
  *

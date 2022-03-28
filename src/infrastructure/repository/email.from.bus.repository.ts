@@ -2,7 +2,7 @@ import nodeMailer from 'nodemailer'
 import { inject, injectable } from 'inversify'
 import { Email } from '../../application/domain/model/email'
 import { BaseRepository } from './base/base.repository'
-import { IEmailRepository } from '../../application/port/email.repository.interface'
+import { IEmailFromBusRepository } from '../../application/port/email.from.bus.repository.interface'
 import { Identifier } from '../../di/identifiers'
 import { ILogger } from '../../utils/custom.logger'
 import { IEntityMapper } from '../port/entity.mapper.interface'
@@ -14,24 +14,26 @@ import fs from 'fs'
 import { EmailTemplate } from '../../application/domain/model/email.template'
 import { EmailFromBus } from '../../application/domain/model/email.from.bus'
 import { EmailFromBusEntity } from '../entity/email.from.bus.entity'
+import { Query } from './query/query'
+import cryptojs from 'crypto-js'
 
 /**
- * Implementation of the email repository.
+ * Implementation of the email from bus repository.
  *
- * @implements {IEmailRepository}
+ * @implements {IEmailFromBusRepository}
  */
 @injectable()
-export class EmailRepository extends BaseRepository<EmailFromBus, EmailFromBusEntity> implements IEmailRepository {
+export class EmailFromBusRepository extends BaseRepository<EmailFromBus, EmailFromBusEntity> implements IEmailFromBusRepository {
     private readonly smtpTransport: any
     private connection: boolean
 
     constructor(
         @inject(Identifier.EMAIL_REPO_MODEL) readonly emailModel: any,
-        @inject(Identifier.EMAIL_FROM_BUS_ENTITY_MAPPER) readonly emailFromBusMapper:
+        @inject(Identifier.EMAIL_FROM_BUS_ENTITY_MAPPER) readonly emailFromBusEntityMapper:
             IEntityMapper<EmailFromBus, EmailFromBusEntity>,
         @inject(Identifier.LOGGER) readonly logger: ILogger
     ) {
-        super(emailModel, emailFromBusMapper, logger)
+        super(emailModel, emailFromBusEntityMapper, logger)
         this.smtpTransport = this.createSmtpTransport()
         this.connection = false
         this.smtpTransport.verify((err, success) => {
@@ -70,7 +72,7 @@ export class EmailRepository extends BaseRepository<EmailFromBus, EmailFromBusEn
         return super.create(email)
     }
 
-    public sendTemplate(name: string, to: any, data: any, email: EmailFromBus, lang?: string): Promise<void> {
+    public sendTemplate(name: string, to: any, data: any, email: any, lang?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.getEmailTemplateInstance(name)
                 .send({
@@ -88,8 +90,28 @@ export class EmailRepository extends BaseRepository<EmailFromBus, EmailFromBusEn
                 .catch(reject)
 
             if (!this.connection) {
-                super.create(email)
+                if (!email.id) {
+
+                    const passphrase = 'RegNutes@123'
+                    const newPasswordEncrypt =  cryptojs.AES.encrypt(email.password, passphrase).toString()
+
+                    email.password = newPasswordEncrypt
+                    this.createEmailFromBus(email, name)
+                }
             }
+        })
+    }
+
+    public createEmailFromBus(item: EmailFromBus, type): Promise<EmailFromBus | undefined> {
+        return new Promise<EmailFromBus | undefined>((resolve, reject) => {
+            item.type = type
+            this.Model.create(item)
+                .then((result) => {
+                    const query = new Query()
+                    query.filters = result._id
+                    return resolve(this.findOne(query))
+                })
+                .catch(err => reject(this.mongoDBErrorListener(err)))
         })
     }
 

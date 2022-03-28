@@ -4,7 +4,6 @@ import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
 import { IEmailRepository } from '../../port/email.repository.interface'
-import { EmailResetPasswordValidator } from '../../domain/validator/email.reset.password.validator'
 
 export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
@@ -14,7 +13,7 @@ export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<
      * @param _logger
      */
     constructor(
-        @inject(Identifier.EMAIL_REPOSITORY) public readonly _emailRepository: IEmailRepository,
+        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
@@ -23,12 +22,9 @@ export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<
         try {
             const email: any = event.email
 
-            // 1. Validate object based on create action.
-            EmailResetPasswordValidator.validate(email)
-
             // 2 Configure email and send
             const lang: string = email.lang ? email.lang : 'pt-BR'
-            await this._emailRepository.sendTemplate(
+            await this._emailFromBusRepository.sendTemplate(
                 'reset-password',
                 { name: email.to.name, email: email.to.email },
                 {
@@ -36,6 +32,7 @@ export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<
                     email: email.to.email,
                     action_url: email.action_url
                 },
+                email,
                 lang
             )
             // 3. If got here, it's because the action was successful.

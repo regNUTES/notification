@@ -4,7 +4,6 @@ import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
 import { IEmailRepository } from '../../port/email.repository.interface'
-import { EmailUpdatePasswordValidator } from '../../domain/validator/email.update.password.validator'
 
 export class EmailUpdatePasswordEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
@@ -14,7 +13,7 @@ export class EmailUpdatePasswordEventHandler implements IIntegrationEventHandler
      * @param _logger
      */
     constructor(
-        @inject(Identifier.EMAIL_REPOSITORY) public readonly _emailRepository: IEmailRepository,
+        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
@@ -23,18 +22,16 @@ export class EmailUpdatePasswordEventHandler implements IIntegrationEventHandler
         try {
             const email: any = event.email
 
-            // 1. Validate object based on create action.
-            EmailUpdatePasswordValidator.validate(email)
-
             // 2 Configure email and send
             const lang: string = email.lang ? email.lang : 'pt-BR'
-            await this._emailRepository.sendTemplate(
+            await this._emailFromBusRepository.sendTemplate(
                 'updated-password',
                 { name: email.to.name, email: email.to.email },
                 {
                     name: email.to.name,
                     email: email.to.email
                 },
+                email,
                 lang
             )
             // 3. If got here, it's because the action was successful.

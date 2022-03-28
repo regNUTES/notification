@@ -1,15 +1,15 @@
-import { Email } from '../domain/model/email'
+import { EmailFromBus } from '../domain/model/email.from.bus'
 import { IRepository } from './repository.interface'
 import { EmailTemplate } from '../domain/model/email.template'
 
 /**
- * Interface of the email repository.
+ * Interface of the email from bus repository.
  * Must be implemented by the email repository at the infrastructure layer.
  *
  * @see {@link PhysicalActivityRepository} for further information.
  * @extends {IRepository<Email>}
  */
-export interface IEmailRepository extends IRepository<Email> {
+export interface IEmailFromBusRepository extends IRepository<EmailFromBus> {
     /**
      * Send mail and save to local database.
      *
@@ -17,7 +17,7 @@ export interface IEmailRepository extends IRepository<Email> {
      * @return {Promise<Email | undefined>}
      * @throws {ValidationException | RepositoryException}
      */
-    send(email: Email): Promise<Email | undefined>
+    send(email: EmailFromBus): Promise<EmailFromBus | undefined>
 
     /**
      * Send email using a predefined template.
@@ -29,7 +29,7 @@ export interface IEmailRepository extends IRepository<Email> {
      * @return {Promise<void>}
      * @throws {ValidationException | RepositoryException}
      */
-    sendTemplate(name: string, to: any, data: any, email: any, lang?: string): Promise<void>
+    sendTemplate(name: string, to: any, data: any, email: EmailFromBus, lang?: string): Promise<void>
 
     /**
      * Send email and attachments using a predefined template.
@@ -70,4 +70,5 @@ export interface IEmailRepository extends IRepository<Email> {
      * @throws {Exception}
      */
     updateTemplate(emailTemplate: EmailTemplate): Promise<EmailTemplate>
+
 }

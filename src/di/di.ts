@@ -49,6 +49,12 @@ import { PushEntityMapper } from '../infrastructure/entity/mapper/push.entity.ma
 import { IConnectionFirebase } from '../infrastructure/port/connection.firebase.interface'
 import { ConnectionFirebase } from '../infrastructure/firebase/connection.firebase'
 import { ConnectionFactoryFirebase } from '../infrastructure/firebase/connection.factory.firebase'
+import { EmailsNotSentTask } from '../background/task/email.not.sent.task'
+import { EmailFromBus } from '../application/domain/model/email.from.bus'
+import { EmailFromBusEntityMapper } from '../infrastructure/entity/mapper/email.from.bus.entity.mapper'
+import { EmailFromBusEntity } from '../infrastructure/entity/email.from.bus.entity'
+import { EmailFromBusRepository } from '../infrastructure/repository/email.from.bus.repository'
+import { IEmailFromBusRepository } from '../application/port/email.from.bus.repository.interface'
 
 class IoC {
     private readonly _container: Container
@@ -101,6 +107,8 @@ class IoC {
         // Repositories
         this._container.bind<IEmailRepository>(Identifier.EMAIL_REPOSITORY)
             .to(EmailRepository).inSingletonScope()
+        this._container.bind<IEmailFromBusRepository>(Identifier.EMAIL_FROM_BUS_REPOSITORY)
+            .to(EmailFromBusRepository).inSingletonScope()
         this._container.bind<IPushTokenRepository>(Identifier.PUSH_TOKEN_REPOSITORY)
             .to(PushTokenRepository).inSingletonScope()
         this._container.bind<IPushRepository>(Identifier.PUSH_REPOSITORY)
@@ -116,11 +124,15 @@ class IoC {
             .bind<IEntityMapper<Email, EmailEntity>>(Identifier.EMAIL_ENTITY_MAPPER)
             .to(EmailEntityMapper).inSingletonScope()
         this._container
+            .bind<IEntityMapper<EmailFromBus, EmailFromBusEntity>>(Identifier.EMAIL_FROM_BUS_ENTITY_MAPPER)
+            .to(EmailFromBusEntityMapper).inSingletonScope()
+        this._container
             .bind<IEntityMapper<PushToken, PushTokenEntity>>(Identifier.PUSH_TOKEN_ENTITY_MAPPER)
             .to(PushTokenEntityMapper).inSingletonScope()
         this._container
             .bind<IEntityMapper<Push, PushEntity>>(Identifier.PUSH_ENTITY_MAPPER)
             .to(PushEntityMapper).inSingletonScope()
+
 
         // Background Services
         this._container
@@ -152,6 +164,9 @@ class IoC {
         this._container
             .bind<IBackgroundTask>(Identifier.SUBSCRIBE_EVENT_BUS_TASK)
             .to(SubscribeEventBusTask).inSingletonScope()
+        this._container
+            .bind<IBackgroundTask>(Identifier.EMAILS_NOT_SENT_TASK)
+            .to(EmailsNotSentTask).inSingletonScope()
 
         // Log
         this._container.bind<ILogger>(Identifier.LOGGER).to(CustomLogger).inSingletonScope()
