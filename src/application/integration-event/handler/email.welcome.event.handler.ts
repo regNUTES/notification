@@ -21,7 +21,6 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
 
     public async handle(event: EmailEvent): Promise<void> {
         try {
-
             const email: any = event.email
 
             // 1. Validate object based on create action.
@@ -43,7 +42,7 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
                 lang
             )
 
-            // 4. If got here, it's because the action was successful.
+            // 3. If got here, it's because the action was successful.
             this._logger.info(`Action for event ${event.event_name} successfully performed!`)
         } catch (err: any) {
             this._logger.warn(`An error occurred while attempting `

@@ -4,6 +4,7 @@ import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
 import { IEmailRepository } from '../../port/email.repository.interface'
+import { EmailUpdatePasswordValidator } from '../../domain/validator/email.update.password.validator'
 
 export class EmailUpdatePasswordEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
@@ -21,6 +22,9 @@ export class EmailUpdatePasswordEventHandler implements IIntegrationEventHandler
     public async handle(event: EmailEvent): Promise<void> {
         try {
             const email: any = event.email
+
+            // 1. Validate object based on create action.
+            EmailUpdatePasswordValidator.validate(email)
 
             // 2 Configure email and send
             const lang: string = email.lang ? email.lang : 'pt-BR'

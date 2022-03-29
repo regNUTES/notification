@@ -66,14 +66,14 @@ export class EmailsNotSentTask implements IBackgroundTask {
                             await this.formatEmailResetPassword(email)
                         }
 
-                        if (email.type === 'update-password') {
+                        if (email.type === 'updated-password') {
                             await this.formatEmailUpdatePassword(email)
                         }
 
-                        // 3. If send email, delete this email to db
+                        // 1. If send email, delete this email to db
                         await this._emailFromBusRepository.delete(email.id)
 
-                        // 4. If got here, it's because the action was successful.
+                        // 2. If got here, it's because the action was successful.
                         this._logger.info(`Action for event send email successfully performed!`)
                     }
                 }

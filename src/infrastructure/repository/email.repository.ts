@@ -23,7 +23,6 @@ import { EmailFromBusEntity } from '../entity/email.from.bus.entity'
 @injectable()
 export class EmailRepository extends BaseRepository<EmailFromBus, EmailFromBusEntity> implements IEmailRepository {
     private readonly smtpTransport: any
-    private connection: boolean
 
     constructor(
         @inject(Identifier.EMAIL_REPO_MODEL) readonly emailModel: any,
@@ -33,14 +32,11 @@ export class EmailRepository extends BaseRepository<EmailFromBus, EmailFromBusEn
     ) {
         super(emailModel, emailFromBusMapper, logger)
         this.smtpTransport = this.createSmtpTransport()
-        this.connection = false
         this.smtpTransport.verify((err, success) => {
             if (err) {
                 this.logger.error(`Invalid SMTP Credentials. ${err.message}`)
-                this.connection = false
                 return
             }
-            this.connection = true
             this.logger.info('SMTP credentials successfully verified!')
         })
     }
@@ -86,10 +82,6 @@ export class EmailRepository extends BaseRepository<EmailFromBus, EmailFromBusEn
                 })
                 .then(resolve)
                 .catch(reject)
-
-            if (!this.connection) {
-                super.create(email)
-            }
         })
     }
 
