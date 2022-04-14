@@ -14,7 +14,7 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
      * @param _logger
      */
     constructor(
-        @inject(Identifier.EMAIL_REPOSITORY) public readonly _emailRepository: IEmailRepository,
+        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
@@ -29,7 +29,7 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
             // 2 Configure email and send
             const lang: string = email.lang ? email.lang : 'pt-BR'
             const nameList = email.to.name.split(' ')
-            await this._emailRepository.sendTemplate(
+            await this._emailFromBusRepository.sendTemplate(
                 'welcome',
                 { name: email.to.name, email: email.to.email },
                 {
@@ -38,8 +38,10 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
                     password: email.password ? email.password : undefined,
                     action_url: email.action_url
                 },
+                email,
                 lang
             )
+
             // 3. If got here, it's because the action was successful.
             this._logger.info(`Action for event ${event.event_name} successfully performed!`)
         } catch (err: any) {

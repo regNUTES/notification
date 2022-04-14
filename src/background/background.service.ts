@@ -6,9 +6,21 @@ import { IConnectionDB } from '../infrastructure/port/connection.db.interface'
 import { IBackgroundTask } from '../application/port/background.task.interface'
 import { IEventBus } from '../infrastructure/port/event.bus.interface'
 import { IConnectionFirebase } from '../infrastructure/port/connection.firebase.interface'
+import { EmailsNotSentTask } from './task/email.not.sent.task'
+import { DIContainer } from '../di/di'
+import { IEmailService } from '../application/port/email.service.interface'
+import { Default } from '../utils/default'
+import { IEmailFromBusRepository } from '../application/port/email.from.bus.repository.interface'
 
 @injectable()
 export class BackgroundService {
+
+    private _emailsNotSentTask: IBackgroundTask = new EmailsNotSentTask(
+        DIContainer.get<IEmailService>(Identifier.EMAIL_SERVICE),
+        DIContainer.get<IEmailFromBusRepository>(Identifier.EMAIL_FROM_BUS_REPOSITORY),
+        this._logger,
+        process.env.EXPRESSION_DONT_SENT_EMAILS || Default.EXPRESSION_DONT_SENT_EMAILS
+    )
 
     constructor(
         @inject(Identifier.RABBITMQ_EVENT_BUS) private readonly _eventBus: IEventBus,
@@ -42,6 +54,7 @@ export class BackgroundService {
             await this._mongodb.dispose()
 
             await this._subscribeTask.stop()
+            await this._emailsNotSentTask.stop()
         } catch (err: any) {
             return Promise.reject(new Error(`Error stopping background services! ${err.message}`))
         }
@@ -85,5 +98,7 @@ export class BackgroundService {
             .catch(err => {
                 this._logger.error(`Error trying to get connection to Event Bus for event subscribing. ${err.message}`)
             })
+
+        this._emailsNotSentTask.run()
     }
 }

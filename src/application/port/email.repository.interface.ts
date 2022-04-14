@@ -29,7 +29,7 @@ export interface IEmailRepository extends IRepository<Email> {
      * @return {Promise<void>}
      * @throws {ValidationException | RepositoryException}
      */
-    sendTemplate(name: string, to: any, data: any, lang?: string): Promise<void>
+    sendTemplate(name: string, to: any, data: any, email: any, lang?: string): Promise<void>
 
     /**
      * Send email and attachments using a predefined template.
