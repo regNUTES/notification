@@ -33,7 +33,7 @@
     public static readonly SSL_CERT_PATH: string = '.certs/server.crt'
 
     // Tasks cron expressions.
-    public static readonly EXPRESSION_DONT_SENT_EMAILS: string = '0 * * * *'
+    public static readonly EXPRESSION_DONT_SENT_EMAILS: string = '*/10 * * * *'
 
     // The Google Firebase Config JSON file path for use firebase admin features.
     public static readonly FIREBASE_CREDENTIALS_PATH: string = '/path/to/firebase_credentials_file.json'
