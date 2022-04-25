@@ -2,8 +2,7 @@ asyncapi: 2.3.0
 info:
   title: regNUTES - Notification Service
   version: 1.0.0
-  description: >-
-    This service is responsible for sending emails on the regNUTES platform.
+  description: This service is responsible for sending emails on the regNUTES platform.
   contact:
     email: regnutes.dev@gmail.com
   license:
@@ -18,7 +17,9 @@ channels:
   emails.welcome:
     publish:
       operationId: publishEmailWelcomeEvent
-      summary: Publish an event with welcome information from a newly registered User in the API.
+      summary: >-
+        Publish an event with welcome information from a newly registered User
+        in the API.
       message:
         $ref: '#/components/messages/EmailWelcomeEvent'
     bindings:
@@ -26,7 +27,9 @@ channels:
   emails.reset-password:
     publish:
       operationId: publishEmailResetPasswordEvent
-      summary: Publish an event with information for the password reset of a User registered in the API.
+      summary: >-
+        Publish an event with information for the password reset of a User
+        registered in the API.
       message:
         $ref: '#/components/messages/EmailResetPasswordEvent'
     bindings:
@@ -34,9 +37,31 @@ channels:
   emails.update-password:
     publish:
       operationId: publishEmailUpdatePasswordEvent
-      summary: Publish an event with information about a password update of a User registered in the API.
+      summary: >-
+        Publish an event with information about a password update of a User
+        registered in the API.
       message:
         $ref: '#/components/messages/EmailUpdatePasswordEvent'
+    bindings:
+      $ref: '#/components/channelBindings/EmailPublishBinding'
+  emails.scheduled-surgery:
+    publish:
+      operationId: publishEmailScheduledSurgeryEvent
+      summary: >-
+        Publish an event with information about scheduling a Surgery for a
+        Request registered in the API.
+      message:
+        $ref: '#/components/messages/EmailScheduledSurgeryEvent'
+    bindings:
+      $ref: '#/components/channelBindings/EmailPublishBinding'
+  emails.rejected-request:
+    publish:
+      operationId: publishEmailRejectedRequestEvent
+      summary: >-
+        Publish an event with information about the rejection of a Request
+        registered in the API.
+      message:
+        $ref: '#/components/messages/EmailRejectedRequestEvent'
     bindings:
       $ref: '#/components/channelBindings/EmailPublishBinding'
 components:
@@ -48,7 +73,7 @@ components:
           event_name:
             type: string
             description: Event name.
-            example: 'EmailWelcomeEvent'
+            example: EmailWelcomeEvent
           timestamp:
             type: string
             format: date-time
@@ -57,7 +82,7 @@ components:
           type:
             type: string
             description: Event type.
-            example: 'emails'
+            example: emails
           email:
             type: object
             required:
@@ -73,19 +98,22 @@ components:
                   name:
                     type: string
                     description: User name.
-                    example: 'Maria Fernandes Araújo'
+                    example: Maria Fernandes Araújo
                   email:
                     type: string
                     description: User email.
-                    example: 'maria.araujo@mail.com'
+                    example: maria.araujo@mail.com
               action_url:
                 type: string
-                description: Url that will forward the User from your email manager to the platform's dashboard so that he can start his experience of use.
-                example: 'http://localhost:4200'
+                description: >-
+                  Url that will forward the User from your email manager to the
+                  platform's dashboard so that he can start his experience of
+                  use.
+                example: http://localhost:4200
               password:
                 type: string
                 description: User password.
-                example: 'userpassword'
+                example: userpassword
     EmailResetPasswordEvent:
       payload:
         type: object
@@ -93,7 +121,7 @@ components:
           event_name:
             type: string
             description: Event name.
-            example: 'EmailResetPasswordEvent'
+            example: EmailResetPasswordEvent
           timestamp:
             type: string
             format: date-time
@@ -102,7 +130,7 @@ components:
           type:
             type: string
             description: Event type.
-            example: 'emails'
+            example: emails
           email:
             type: object
             required:
@@ -118,15 +146,18 @@ components:
                   name:
                     type: string
                     description: User name.
-                    example: 'Maria Fernandes Araújo'
+                    example: Maria Fernandes Araújo
                   email:
                     type: string
                     description: User email.
-                    example: 'maria.araujo@mail.com'
+                    example: maria.araujo@mail.com
               action_url:
                 type: string
-                description: Url that will forward the User from your email manager to the platform's dashboard so that he can reset his password.
-                example: 'http://localhost:4200/password-reset?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MjBlYWFhN2NlNGIxODE0Y2NhZGYxZjEiLCJzdWJfdHlwZSI6ImhlYWx0aHVuaXRfbWFuYWdlciIsImlzcyI6InJlZ251dGVzIiwiaWF0IjoxNjQ1MTMwMDUzLCJzY29wZSI6ImhtOnJwIiwicGFzc3dvcmRfcmVzZXQiOnRydWUsImV4cCI6MTY0NTEzMzY1M30.F63uLFR4uJgvrAZfsoy7rMfJ_4Ep_Xvm4sL-lWPzoUF0pcS1d3aPaCLiD8WbipRvK5yr1bp5MwGlugImG48fvz7NSEBJXUdqB3l6Q6_0litF1QrGp6rRRgowTTBWtR_0p7gdkyupFgBSugf-EH1TXwbhgUjOvhBKQZCNC9eFj-0sSz1kFlj1R6onEmOOrYjhvk1kpjFMCiJKCKJS0c0BnO0UKbRe7lQvmHu9ZyMIEj9XRIT5CjEkWSwj47ge6061LC1FP_6pdYoQi48bEQxBw1ynq3OnHjHQY-B4E3CpyTd3Fud_1jzgV8W5ehDsiP3aXcf0BTxGgAktKn6S96yvlA'
+                description: >-
+                  Url that will forward the User from your email manager to the
+                  platform's dashboard so that he can reset his password.
+                example: >-
+                  http://localhost:4200/password-reset?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MjBlYWFhN2NlNGIxODE0Y2NhZGYxZjEiLCJzdWJfdHlwZSI6ImhlYWx0aHVuaXRfbWFuYWdlciIsImlzcyI6InJlZ251dGVzIiwiaWF0IjoxNjQ1MTMwMDUzLCJzY29wZSI6ImhtOnJwIiwicGFzc3dvcmRfcmVzZXQiOnRydWUsImV4cCI6MTY0NTEzMzY1M30.F63uLFR4uJgvrAZfsoy7rMfJ_4Ep_Xvm4sL-lWPzoUF0pcS1d3aPaCLiD8WbipRvK5yr1bp5MwGlugImG48fvz7NSEBJXUdqB3l6Q6_0litF1QrGp6rRRgowTTBWtR_0p7gdkyupFgBSugf-EH1TXwbhgUjOvhBKQZCNC9eFj-0sSz1kFlj1R6onEmOOrYjhvk1kpjFMCiJKCKJS0c0BnO0UKbRe7lQvmHu9ZyMIEj9XRIT5CjEkWSwj47ge6061LC1FP_6pdYoQi48bEQxBw1ynq3OnHjHQY-B4E3CpyTd3Fud_1jzgV8W5ehDsiP3aXcf0BTxGgAktKn6S96yvlA
     EmailUpdatePasswordEvent:
       payload:
         type: object
@@ -134,7 +165,7 @@ components:
           event_name:
             type: string
             description: Event name.
-            example: 'EmailUpdatePasswordEvent'
+            example: EmailUpdatePasswordEvent
           timestamp:
             type: string
             format: date-time
@@ -143,7 +174,7 @@ components:
           type:
             type: string
             description: Event type.
-            example: 'emails'
+            example: emails
           email:
             type: object
             required:
@@ -158,11 +189,142 @@ components:
                   name:
                     type: string
                     description: User name.
-                    example: 'Maria Fernandes Araújo'
+                    example: Maria Fernandes Araújo
                   email:
                     type: string
                     description: User email.
-                    example: 'maria.araujo@mail.com'
+                    example: maria.araujo@mail.com
+    EmailScheduledSurgeryEvent:
+      payload:
+        type: object
+        properties:
+          event_name:
+            type: string
+            description: Event name.
+            example: EmailScheduledSurgeryEvent
+          timestamp:
+            type: string
+            format: date-time
+            description: Event timestamp.
+            example: '2022-02-17T20:59:37.293Z'
+          type:
+            type: string
+            description: Event type.
+            example: emails
+          email:
+            type: object
+            required:
+              - to
+              - data
+            properties:
+              to:
+                type: object
+                required:
+                  - name
+                  - email
+                properties:
+                  name:
+                    type: string
+                    description: User name.
+                    example: Maria Fernandes Araújo
+                  email:
+                    type: string
+                    description: User email.
+                    example: maria.araujo@mail.com
+              data:
+                type: object
+                required:
+                  - request_code
+                  - municipality
+                  - health_unit
+                  - surgery
+                  - surgery_scheduling_date
+                properties:
+                  request_code:
+                    type: string
+                    description: Request code.
+                    example: '20210507173055'
+                  municipality:
+                    type: string
+                    description: >-
+                      Name of the municipality where the Surgery will be
+                      performed.
+                    example: Campina Grande
+                  health_unit:
+                    type: string
+                    description: Name of the HealthUnit that will perform the Surgery.
+                    example: Hospital de Trauma de Campina Grande.
+                  surgery:
+                    type: string
+                    description: Surgery Name.
+                    example: Catarata
+                  surgery_scheduling_date:
+                    type: string
+                    description: Date the Surgery will be performed.
+                    example: 21-05-05T10:00:30Z
+    EmailRejectedRequestEvent:
+      payload:
+        type: object
+        properties:
+          event_name:
+            type: string
+            description: Event name.
+            example: EmailRejectedRequestEvent
+          timestamp:
+            type: string
+            format: date-time
+            description: Event timestamp.
+            example: '2022-02-17T20:59:37.293Z'
+          type:
+            type: string
+            description: Event type.
+            example: emails
+          email:
+            type: object
+            required:
+              - to
+              - data
+            properties:
+              to:
+                type: object
+                required:
+                  - name
+                  - email
+                properties:
+                  name:
+                    type: string
+                    description: User name.
+                    example: Maria Fernandes Araújo
+                  email:
+                    type: string
+                    description: User email.
+                    example: maria.araujo@mail.com
+              data:
+                type: object
+                required:
+                  - request_code
+                  - municipality
+                  - health_unit
+                  - surgery
+                properties:
+                  request_code:
+                    type: string
+                    description: Request code.
+                    example: '20210507173055'
+                  municipality:
+                    type: string
+                    description: >-
+                      Name of the municipality where the Surgery will be
+                      performed.
+                    example: Campina Grande
+                  health_unit:
+                    type: string
+                    description: Name of the HealthUnit that will perform the Surgery.
+                    example: Hospital de Trauma de Campina Grande.
+                  surgery:
+                    type: string
+                    description: Surgery Name.
+                    example: Catarata
   channelBindings:
     EmailPublishBinding:
       amqp:

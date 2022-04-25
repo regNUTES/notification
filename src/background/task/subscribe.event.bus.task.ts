@@ -14,6 +14,7 @@ import { UserDeleteEvent } from '../../application/integration-event/event/user.
 import { UserDeleteEventHandler } from '../../application/integration-event/handler/user.delete.event.handler'
 import { PushSendEvent } from '../../application/integration-event/event/push.send.event'
 import { PushSendEventHandler } from '../../application/integration-event/handler/push.send.event.handler'
+import { EmailScheduledSurgeryEventHandler } from '../../application/integration-event/handler/email.scheduled.surgery.event.handler'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -94,6 +95,21 @@ export class SubscribeEventBusTask implements IBackgroundTask {
             .catch(err => {
                 this._logger.error(`Error in Subscribe EmailUpdatePasswordEvent! ${err.message}`)
             })
+
+        /**
+         * Subscribe in EmailUpdatePasswordEvent
+         */
+        this._eventBus
+            .subscribe(new EmailEvent('EmailScheduledSurgeryEvent'),
+                new EmailScheduledSurgeryEventHandler(DIContainer.get(Identifier.EMAIL_FROM_BUS_REPOSITORY), this._logger),
+                'emails.scheduled-surgery')
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in EmailScheduledSurgeryEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe EmailScheduledSurgeryEvent! ${err.message}`)
+            })
+
 
         /**
          * Subscribe in EmailPilotStudyDataEvent

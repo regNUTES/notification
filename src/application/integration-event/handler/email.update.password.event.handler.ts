@@ -3,8 +3,8 @@ import { Identifier } from '../../../di/identifiers'
 import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
-import { IEmailRepository } from '../../port/email.repository.interface'
 import { EmailUpdatePasswordValidator } from '../../domain/validator/email.update.password.validator'
+import { IEmailFromBusRepository } from '../../port/email.from.bus.repository.interface'
 
 export class EmailUpdatePasswordEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
@@ -14,7 +14,7 @@ export class EmailUpdatePasswordEventHandler implements IIntegrationEventHandler
      * @param _logger
      */
     constructor(
-        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailRepository,
+        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailFromBusRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }

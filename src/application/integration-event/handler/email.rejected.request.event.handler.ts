@@ -1,17 +1,17 @@
 import { inject } from 'inversify'
 import { Identifier } from '../../../di/identifiers'
-import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
-import { EmailEvent } from '../event/email.event'
-import { EmailWelcomeValidator } from '../../domain/validator/email.welcome.validator'
+import { EmailRejectedRequestValidator } from '../../domain/validator/email.rejected.request.validator'
 import { IEmailFromBusRepository } from '../../port/email.from.bus.repository.interface'
+import { EmailEvent } from '../event/email.event'
+import { IIntegrationEventHandler } from './integration.event.handler.interface'
 
-export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailEvent> {
+export class EmailRejectedRequestEventHandler implements IIntegrationEventHandler<EmailEvent> {
+
     /**
-     * Creates an instance of EmailWelcomeEventHandler.
-     *
-     * @param _emailFromBusRepository
-     * @param _logger
+     * Creates an instance of EmailRejectedRequestEventHandler.
+     * @param _emailFromBusRepository 
+     * @param _logger 
      */
     constructor(
         @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailFromBusRepository,
@@ -24,23 +24,10 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
             const email: any = event.email
 
             // 1. Validate object based on create action.
-            EmailWelcomeValidator.validate(email)
+            EmailRejectedRequestValidator.validate(email)
 
             // 2 Configure email and send
-            const lang: string = email.lang ? email.lang : 'pt-BR'
-            const nameList = email.to.name.split(' ')
-            await this._emailFromBusRepository.sendTemplate(
-                'welcome',
-                { name: email.to.name, email: email.to.email },
-                {
-                    name: `${nameList[0]} ${(nameList.length > 1 ? nameList[1] : '')}`,
-                    email: email.to.email,
-                    password: email.password ? email.password : undefined,
-                    action_url: email.action_url
-                },
-                email,
-                lang
-            )
+            // TO-DO
 
             // 3. If got here, it's because the action was successful.
             this._logger.info(`Action for event ${event.event_name} successfully performed!`)
