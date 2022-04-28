@@ -29,7 +29,6 @@ export class EmailScheduledSurgeryEventHandler implements IIntegrationEventHandl
 
             // 2 Configure email and send
             const nameList = email.to.name.split(' ')
-            const health_unit_name: string = email.data.health_unit ? email.data.health_unit : '_'
             const surgery_name: string = email.data.surgery ? email.data.surgery : '_'
 
             await this._emailRepository.sendTemplate(
@@ -39,7 +38,7 @@ export class EmailScheduledSurgeryEventHandler implements IIntegrationEventHandl
                     name: `${nameList[0]} ${(nameList.length > 1 ? nameList[1] : '')}`,
                     request_code: email.data.request_code,
                     municipality: email.data.municipality,
-                    health_unit: health_unit_name,
+                    health_unit: email.data.health_unit,
                     surgery: surgery_name,
                     surgery_scheduling_date: email.data.surgery_scheduling_date
                 },
