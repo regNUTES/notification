@@ -15,7 +15,7 @@ import { UserDeleteEventHandler } from '../../application/integration-event/hand
 import { PushSendEvent } from '../../application/integration-event/event/push.send.event'
 import { PushSendEventHandler } from '../../application/integration-event/handler/push.send.event.handler'
 import { EmailScheduledSurgeryEventHandler } from '../../application/integration-event/handler/email.scheduled.surgery.event.handler'
-import { EmailRejectedRequestEventHandler } from '../../application/integration-event/handler/email.rejected.request.event.handler'
+import { EmailRejectedSurgeryRequestEventHandler } from '../../application/integration-event/handler/email.rejected.request.surgery.event.handler'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -102,7 +102,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
          */
         this._eventBus
             .subscribe(new EmailEvent('EmailScheduledSurgeryEvent'),
-                new EmailScheduledSurgeryEventHandler(DIContainer.get(Identifier.EMAIL_FROM_BUS_REPOSITORY), this._logger),
+                new EmailScheduledSurgeryEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
                 'emails.scheduled-surgery')
             .then((result: boolean) => {
                 if (result) this._logger.info('Subscribe in EmailScheduledSurgeryEvent successful!')
@@ -115,14 +115,14 @@ export class SubscribeEventBusTask implements IBackgroundTask {
          * Subscribe in EmailRejectedRequestEvent
          */
         this._eventBus
-            .subscribe(new EmailEvent('EmailRejectedRequestEvent'),
-                new EmailRejectedRequestEventHandler(DIContainer.get(Identifier.EMAIL_FROM_BUS_REPOSITORY), this._logger),
-                'emails.rejected-request')
+            .subscribe(new EmailEvent('EmailRejectedSurgeryRequestEvent'),
+                new EmailRejectedSurgeryRequestEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                'emails.rejected-surgery-request')
             .then((result: boolean) => {
-                if (result) this._logger.info('Subscribe in EmailRejectedRequestEvent successful!')
+                if (result) this._logger.info('Subscribe in EmailRejectedSurgeryRequestEvent successful!')
             })
             .catch(err => {
-                this._logger.error(`Error in Subscribe EmailRejectedRequestEvent! ${err.message}`)
+                this._logger.error(`Error in Subscribe EmailRejectedSurgeryRequestEvent! ${err.message}`)
             })
 
         /**

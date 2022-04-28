@@ -62,10 +62,11 @@ export class EmailFromBusRepository extends BaseRepository<EmailFromBus, EmailFr
 
             if (!this.connection) {
                 if (!email.id) {
-                    const passphrase = 'RegNutes@123'
-                    const newPasswordEncrypt =  cryptojs.AES.encrypt(email.password, passphrase).toString()
-
-                    email.password = newPasswordEncrypt
+                    if (email.password) {
+                        const passphrase = 'RegNutes@123'
+                        const newPasswordEncrypt =  cryptojs.AES.encrypt(email.password, passphrase).toString()
+                        email.password = newPasswordEncrypt
+                    }
                     this.createEmailFromBus(email, name)
                 }
             }
