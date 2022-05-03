@@ -2,7 +2,6 @@ import nodeMailer from 'nodemailer'
 import { inject, injectable } from 'inversify'
 import { Email } from '../../application/domain/model/email'
 import { BaseRepository } from './base/base.repository'
-import { EmailEntity } from '../entity/email.entity'
 import { IEmailRepository } from '../../application/port/email.repository.interface'
 import { Identifier } from '../../di/identifiers'
 import { ILogger } from '../../utils/custom.logger'
@@ -13,6 +12,8 @@ import Template from 'email-templates'
 import path from 'path'
 import fs from 'fs'
 import { EmailTemplate } from '../../application/domain/model/email.template'
+import { EmailFromBus } from '../../application/domain/model/email.from.bus'
+import { EmailFromBusEntity } from '../entity/email.from.bus.entity'
 
 /**
  * Implementation of the email repository.
@@ -20,15 +21,16 @@ import { EmailTemplate } from '../../application/domain/model/email.template'
  * @implements {IEmailRepository}
  */
 @injectable()
-export class EmailRepository extends BaseRepository<Email, EmailEntity> implements IEmailRepository {
+export class EmailRepository extends BaseRepository<EmailFromBus, EmailFromBusEntity> implements IEmailRepository {
     private readonly smtpTransport: any
 
     constructor(
         @inject(Identifier.EMAIL_REPO_MODEL) readonly emailModel: any,
-        @inject(Identifier.EMAIL_ENTITY_MAPPER) readonly emailMapper: IEntityMapper<Email, EmailEntity>,
+        @inject(Identifier.EMAIL_FROM_BUS_ENTITY_MAPPER) readonly emailFromBusMapper:
+            IEntityMapper<EmailFromBus, EmailFromBusEntity>,
         @inject(Identifier.LOGGER) readonly logger: ILogger
     ) {
-        super(emailModel, emailMapper, logger)
+        super(emailModel, emailFromBusMapper, logger)
         this.smtpTransport = this.createSmtpTransport()
         this.smtpTransport.verify((err, success) => {
             if (err) {
@@ -45,7 +47,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
      * @param email
      * @return Promise<Email>
      */
-    public async send(email: Email): Promise<Email | undefined> {
+    public async send(email: EmailFromBus): Promise<EmailFromBus | undefined> {
         email.from = new Address(process.env.SENDER_NAME, process.env.ORIGIN_EMAIL)
         const emailSendNodeMailer: any = this.convertEmailToNodeMailer(email)
         try {
@@ -64,7 +66,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
         return super.create(email)
     }
 
-    public sendTemplate(name: string, to: any, data: any, lang?: string): Promise<void> {
+    public sendTemplate(name: string, to: any, data: any, email: EmailFromBus, lang?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.getEmailTemplateInstance(name)
                 .send({
@@ -204,7 +206,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
                     })
                 }
             } catch (err: any) {
-                this.logger.error(`The custom templates could not be accessed successfully, so the default will be used. `
+                this.logger.error(`The custom templates could not be accessed successfully, so the default will be used.`
                     .concat(err.message))
             }
         }
@@ -213,6 +215,14 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
             send: true,
             preview: false,
             views: { root: path.resolve(process.cwd(), 'dist', 'src', 'ui', 'templates', 'emails') }
+        })
+    }
+
+    public removeEmailFromDB(userId: string): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            this.emailModel.deleteMany({ user_id: userId })
+                .then((result) => resolve(!!result))
+                .catch(err => reject(this.mongoDBErrorListener(err)))
         })
     }
 

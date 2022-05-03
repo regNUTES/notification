@@ -17,6 +17,9 @@ const emailSchema = new Mongoose.Schema({
         subject: { type: String },
         text: { type: String },
         html: { type: String },
+        action_url: { type: String },
+        password: { type: String },
+        type: { type: String },
         attachments: [{
             filename: { type: String },
             path: { type: String },
@@ -24,7 +27,7 @@ const emailSchema = new Mongoose.Schema({
         }],
         user_id: {
             type: Mongoose.Schema.Types.ObjectId
-        }
+        },
     },
     {
         timestamps: { createdAt: 'created_at', updatedAt: false },

@@ -3,7 +3,7 @@
  *
  * @abstract
  */
-export abstract class Identifier {
+ export abstract class Identifier {
     public static readonly APP: any = Symbol.for('App')
 
     // Controllers
@@ -21,6 +21,7 @@ export abstract class Identifier {
 
     // Repositories
     public static readonly EMAIL_REPOSITORY: any = Symbol.for('EmailRepository')
+    public static readonly EMAIL_FROM_BUS_REPOSITORY: any = Symbol.for('EmailFromBusRepository')
     public static readonly PUSH_TOKEN_REPOSITORY: any = Symbol.for('PushTokenRepository')
     public static readonly PUSH_REPOSITORY: any = Symbol.for('PushRepository')
 
@@ -31,6 +32,7 @@ export abstract class Identifier {
 
     // Mappers
     public static readonly EMAIL_ENTITY_MAPPER: any = Symbol.for('EmailEntityMapper')
+    public static readonly EMAIL_FROM_BUS_ENTITY_MAPPER: any = Symbol.for('EmailFromBusEntityMapper')
     public static readonly PUSH_TOKEN_ENTITY_MAPPER: any = Symbol.for('PushTokenEntityMapper')
     public static readonly PUSH_ENTITY_MAPPER: any = Symbol.for('PushEntityMapper')
 
@@ -46,6 +48,7 @@ export abstract class Identifier {
 
     // Tasks
     public static readonly SUBSCRIBE_EVENT_BUS_TASK: any = Symbol.for('SubscribeEventBusTask')
+    public static readonly EMAILS_NOT_SENT_TASK: any = Symbol.for('EmailsNotSentTask')
 
     // Log
     public static readonly LOGGER: any = Symbol.for('CustomLogger')
