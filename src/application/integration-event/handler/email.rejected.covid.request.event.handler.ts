@@ -30,9 +30,9 @@ export class EmailRejectedCovidRequestEventHandler implements IIntegrationEventH
 
             // 2 Configure email and send
             const nameList = email.to.name.split(' ')
-            const health_unit_name: string = email.data.health_unit ? email.data.health_unit : '_'
-            const bed_code_: string = email.data.bed_code ? email.data.bed_code : '_'
-            const bed_name: string = email.data.bed ? email.data.bed : '_'
+            const healthUnitName: string = email.data.health_unit ? email.data.health_unit : '_'
+            const bedCode: string = email.data.bed_code ? email.data.bed_code : '_'
+            const bedName: string = email.data.bed ? email.data.bed : '_'
 
             await this._emailRepository.sendTemplate(
                 email.operation,
@@ -41,9 +41,9 @@ export class EmailRejectedCovidRequestEventHandler implements IIntegrationEventH
                     name: `${nameList[0]} ${(nameList.length > 1 ? nameList[1] : '')}`,
                     request_code: email.data.request_code,
                     municipality: email.data.municipality,
-                    health_unit: health_unit_name,
-                    bed_code: bed_code_,
-                    bed: bed_name
+                    health_unit: healthUnitName,
+                    bed_code: bedCode,
+                    bed: bedName
                 },
                 email
             )

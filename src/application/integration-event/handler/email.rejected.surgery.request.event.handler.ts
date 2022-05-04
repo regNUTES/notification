@@ -28,8 +28,8 @@ export class EmailRejectedSurgeryRequestEventHandler implements IIntegrationEven
 
             // 2 Configure email and send
             const nameList = email.to.name.split(' ')
-            const health_unit_name: string = email.data.health_unit ? email.data.health_unit : '_'
-            const surgery_name: string = email.data.surgery ? email.data.surgery : '_'
+            const healthUnitName: string = email.data.health_unit ? email.data.health_unit : '_'
+            const surgeryName: string = email.data.surgery ? email.data.surgery : '_'
 
             await this._emailRepository.sendTemplate(
                 email.operation,
@@ -38,8 +38,8 @@ export class EmailRejectedSurgeryRequestEventHandler implements IIntegrationEven
                     name: `${nameList[0]} ${(nameList.length > 1 ? nameList[1] : '')}`,
                     request_code: email.data.request_code,
                     municipality: email.data.municipality,
-                    health_unit: health_unit_name,
-                    surgery: surgery_name
+                    health_unit: healthUnitName,
+                    surgery: surgeryName
                 },
                 email,
             )

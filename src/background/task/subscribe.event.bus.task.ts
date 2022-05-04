@@ -15,7 +15,7 @@ import { UserDeleteEventHandler } from '../../application/integration-event/hand
 import { PushSendEvent } from '../../application/integration-event/event/push.send.event'
 import { PushSendEventHandler } from '../../application/integration-event/handler/push.send.event.handler'
 import { EmailScheduledSurgeryEventHandler } from '../../application/integration-event/handler/email.scheduled.surgery.event.handler'
-import { EmailRejectedSurgeryRequestEventHandler } from '../../application/integration-event/handler/email.rejected.request.surgery.event.handler'
+import { EmailRejectedSurgeryRequestEventHandler } from '../../application/integration-event/handler/email.rejected.surgery.request.event.handler'
 import { EmailRejectedCovidRequestEventHandler } from '../../application/integration-event/handler/email.rejected.covid.request.event.handler'
 import { EmailReservedBedEventHandler } from '../../application/integration-event/handler/email.reserved.bed.event.handler'
 
