@@ -49,19 +49,39 @@ channels:
       operationId: publishEmailScheduledSurgeryEvent
       summary: >-
         Publish an event with information about scheduling a Surgery for a
-        Request registered in the API.
+        SurgeryRequest registered in the API.
       message:
         $ref: '#/components/messages/EmailScheduledSurgeryEvent'
     bindings:
       $ref: '#/components/channelBindings/EmailPublishBinding'
-  emails.rejected-request:
+  emails.rejected-surgery-request:
     publish:
-      operationId: publishEmailRejectedRequestEvent
+      operationId: publishEmailRejectedSurgeryRequestEvent
       summary: >-
-        Publish an event with information about the rejection of a Request
+        Publish an event with information about the rejection of a
+        SurgeryRequest registered in the API.
+      message:
+        $ref: '#/components/messages/EmailRejectedSurgeryRequestEvent'
+    bindings:
+      $ref: '#/components/channelBindings/EmailPublishBinding'
+  emails.reserved-bed:
+    publish:
+      operationId: publishEmailReservedBedEvent
+      summary: >-
+        Publish an event with information about the reservation of a Bed for a
+        CovidRequest registered in the API.
+      message:
+        $ref: '#/components/messages/EmailReservedBedEvent'
+    bindings:
+      $ref: '#/components/channelBindings/EmailPublishBinding'
+  emails.rejected-covid-request:
+    publish:
+      operationId: publishEmailRejectedCovidRequestEvent
+      summary: >-
+        Publish an event with information about the rejection of a CovidRequest
         registered in the API.
       message:
-        $ref: '#/components/messages/EmailRejectedRequestEvent'
+        $ref: '#/components/messages/EmailRejectedCovidRequestEvent'
     bindings:
       $ref: '#/components/channelBindings/EmailPublishBinding'
 components:
@@ -216,6 +236,7 @@ components:
             required:
               - to
               - data
+              - operation
             properties:
               to:
                 type: object
@@ -242,12 +263,12 @@ components:
                 properties:
                   request_code:
                     type: string
-                    description: Request code.
+                    description: SurgeryRequest code.
                     example: '20210507173055'
                   municipality:
                     type: string
                     description: >-
-                      Name of the municipality where the Surgery will be
+                      Name of the Municipality where the Surgery will be
                       performed.
                     example: Campina Grande
                   health_unit:
@@ -262,14 +283,18 @@ components:
                     type: string
                     description: Date the Surgery will be performed.
                     example: 21-05-05T10:00:30Z
-    EmailRejectedRequestEvent:
+              operation:
+                type: string
+                description: Operation that triggered the email.
+                example: scheduled-surgery-responsibles
+    EmailRejectedSurgeryRequestEvent:
       payload:
         type: object
         properties:
           event_name:
             type: string
             description: Event name.
-            example: EmailRejectedRequestEvent
+            example: EmailRejectedSurgeryRequestEvent
           timestamp:
             type: string
             format: date-time
@@ -284,6 +309,7 @@ components:
             required:
               - to
               - data
+              - operation
             properties:
               to:
                 type: object
@@ -309,12 +335,12 @@ components:
                 properties:
                   request_code:
                     type: string
-                    description: Request code.
+                    description: SurgeryRequest code.
                     example: '20210507173055'
                   municipality:
                     type: string
                     description: >-
-                      Name of the municipality where the Surgery will be
+                      Name of the Municipality where the Surgery will be
                       performed.
                     example: Campina Grande
                   health_unit:
@@ -325,6 +351,152 @@ components:
                     type: string
                     description: Surgery Name.
                     example: Catarata
+              operation:
+                type: string
+                description: Operation that triggered the email.
+                example: surgery-request-rejected-by-regulation
+    EmailReservedBedEvent:
+      payload:
+        type: object
+        properties:
+          event_name:
+            type: string
+            description: Event name.
+            example: EmailReservedBedEvent
+          timestamp:
+            type: string
+            format: date-time
+            description: Event timestamp.
+            example: '2022-02-17T20:59:37.293Z'
+          type:
+            type: string
+            description: Event type.
+            example: emails
+          email:
+            type: object
+            required:
+              - to
+              - data
+              - operation
+            properties:
+              to:
+                type: object
+                required:
+                  - name
+                  - email
+                properties:
+                  name:
+                    type: string
+                    description: User name.
+                    example: Maria Fernandes Araújo
+                  email:
+                    type: string
+                    description: User email.
+                    example: maria.araujo@mail.com
+              data:
+                type: object
+                required:
+                  - request_code
+                  - municipality
+                  - health_unit
+                  - bed_code
+                  - bed
+                properties:
+                  request_code:
+                    type: string
+                    description: CovidRequest code.
+                    example: '20210507173055'
+                  municipality:
+                    type: string
+                    description: Name of the Municipality where the Bed is located.
+                    example: Campina Grande
+                  health_unit:
+                    type: string
+                    description: Name of the HealthUnit where the Bed is located.
+                    example: Hospital de Trauma de Campina Grande.
+                  bed_code:
+                    type: string
+                    description: Bed Code.
+                    example: 3102
+                  bed:
+                    type: string
+                    description: Bed Name.
+                    example: UTI-4 003
+              operation:
+                type: string
+                description: Operation that triggered the email.
+                example: reserved-bed
+    EmailRejectedCovidRequestEvent:
+      payload:
+        type: object
+        properties:
+          event_name:
+            type: string
+            description: Event name.
+            example: EmailRejectedCovidRequestEvent
+          timestamp:
+            type: string
+            format: date-time
+            description: Event timestamp.
+            example: '2022-02-17T20:59:37.293Z'
+          type:
+            type: string
+            description: Event type.
+            example: emails
+          email:
+            type: object
+            required:
+              - to
+              - data
+              - operation
+            properties:
+              to:
+                type: object
+                required:
+                  - name
+                  - email
+                properties:
+                  name:
+                    type: string
+                    description: User name.
+                    example: Maria Fernandes Araújo
+                  email:
+                    type: string
+                    description: User email.
+                    example: maria.araujo@mail.com
+              data:
+                type: object
+                required:
+                  - request_code
+                  - municipality
+                  - health_unit
+                  - bed_code
+                  - bed
+                properties:
+                  request_code:
+                    type: string
+                    description: CovidRequest code.
+                    example: '20210507173055'
+                  municipality:
+                    type: string
+                    description: Name of the Municipality where the Bed is located.
+                    example: Campina Grande
+                  health_unit:
+                    type: string
+                    description: Name of the HealthUnit where the Bed is located.
+                    example: Hospital de Trauma de Campina Grande.
+                  bed_code:
+                    type: string
+                    description: Bed Code.
+                    example: 3102
+                  bed:
+                    type: string
+                    description: Bed Name.
+                    example: UTI-4 003
+              operation:
+                type: string
+                description: Operation that triggered the email.
+                example: covid-request-rejected-by-regulation
   channelBindings:
     EmailPublishBinding:
       amqp:

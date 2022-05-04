@@ -16,6 +16,8 @@ import { PushSendEvent } from '../../application/integration-event/event/push.se
 import { PushSendEventHandler } from '../../application/integration-event/handler/push.send.event.handler'
 import { EmailScheduledSurgeryEventHandler } from '../../application/integration-event/handler/email.scheduled.surgery.event.handler'
 import { EmailRejectedSurgeryRequestEventHandler } from '../../application/integration-event/handler/email.rejected.request.surgery.event.handler'
+import { EmailRejectedCovidRequestEventHandler } from '../../application/integration-event/handler/email.rejected.covid.request.event.handler'
+import { EmailReservedBedEventHandler } from '../../application/integration-event/handler/email.reserved.bed.event.handler'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -123,6 +125,34 @@ export class SubscribeEventBusTask implements IBackgroundTask {
             })
             .catch(err => {
                 this._logger.error(`Error in Subscribe EmailRejectedSurgeryRequestEvent! ${err.message}`)
+            })
+
+        /**
+         *  Subscribe in EmailRejectedCovidRequestEvent
+         */
+        this._eventBus
+            .subscribe(new EmailEvent('EmailRejectedCovidRequestEvent'),
+                new EmailRejectedCovidRequestEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                'emails.rejected-covid-request')
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in EmailRejectedCovidRequestEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe EmailRejectedCovidRequestEvent! ${err.message}`)
+            })
+
+        /**
+         * Subscribe in EmailReservedBedEvent
+         */
+        this._eventBus
+            .subscribe(new EmailEvent('EmailReservedBedEvent'),
+                new EmailReservedBedEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                'emails.reserved-bed')
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in EmailReservedBedEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe EmailReservedBedEvent! ${err.message}`)
             })
 
         /**
