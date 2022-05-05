@@ -4,17 +4,17 @@ import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
 import { EmailWelcomeValidator } from '../../domain/validator/email.welcome.validator'
-import { IEmailFromBusRepository } from '../../port/email.from.bus.repository.interface'
+import { IEmailFromUsersRepository } from '../../port/email.from.users.repository.interface'
 
 export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
      * Creates an instance of EmailWelcomeEventHandler.
      *
-     * @param _emailFromBusRepository
+     * @param _emailFromUsersRepository
      * @param _logger
      */
     constructor(
-        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailFromBusRepository,
+        @inject(Identifier.EMAIL_FROM_USERS_REPOSITORY) public readonly _emailFromUsersRepository: IEmailFromUsersRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
@@ -29,7 +29,7 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
             // 2 Configure email and send
             const lang: string = email.lang ? email.lang : 'pt-BR'
             const nameList = email.to.name.split(' ')
-            await this._emailFromBusRepository.sendTemplate(
+            await this._emailFromUsersRepository.sendTemplate(
                 'welcome',
                 { name: email.to.name, email: email.to.email },
                 {

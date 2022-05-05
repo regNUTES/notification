@@ -10,7 +10,7 @@ import { IIntegrationEventHandler } from './integration.event.handler.interface'
 export class EmailScheduledSurgeryEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
      * Creates an instance of EmailScheduledSurgeryEventHandler.
-     * @param _emailFromBusRepository 
+     * @param _emailRepository 
      * @param _logger 
      * 
      */

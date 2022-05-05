@@ -2,7 +2,7 @@ import { Email } from '../domain/model/email'
 import { IService } from './service.interface'
 import { IQuery } from './query.interface'
 import { EmailTemplate } from '../domain/model/email.template'
-import { EmailFromBus } from '../domain/model/email.from.bus'
+import { EmailFromUsers } from '../domain/model/email.from.users'
 
 /**
  * Interface of the email service.
@@ -37,7 +37,7 @@ export interface IEmailService extends IService<Email> {
      * @param query 
      * 
      */
-    getAllEmailBus(query: IQuery): Promise<Array<EmailFromBus>>
+    getAllEmailUsers(query: IQuery): Promise<Array<EmailFromUsers>>
 
     /**
      * Recover user email data.

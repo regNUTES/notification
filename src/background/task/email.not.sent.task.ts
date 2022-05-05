@@ -6,7 +6,7 @@ import { ILogger } from '../../utils/custom.logger'
 import { IQuery } from '../../application/port/query.interface'
 import { Query } from '../../infrastructure/repository/query/query'
 import { IEmailService } from '../../application/port/email.service.interface'
-import { IEmailFromBusRepository } from '../../application/port/email.from.bus.repository.interface'
+import { IEmailFromUsersRepository } from '../../application/port/email.from.users.repository.interface'
 import cryptojs from 'crypto-js'
 
 /**
@@ -20,7 +20,7 @@ export class EmailsNotSentTask implements IBackgroundTask {
 
     constructor(
         @inject(Identifier.EMAIL_SERVICE) private readonly _emailService: IEmailService,
-        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailFromBusRepository,
+        @inject(Identifier.EMAIL_FROM_USERS_REPOSITORY) public readonly _emailFromUsersRepository: IEmailFromUsersRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger,
         private readonly expressionDontSentEmails?: string
     ) {
@@ -53,7 +53,7 @@ export class EmailsNotSentTask implements IBackgroundTask {
         try {
             const queryEmails: IQuery = new Query()
 
-            const emailsNotSent: Array<any> = await this._emailService.getAllEmailBus(queryEmails)
+            const emailsNotSent: Array<any> = await this._emailService.getAllEmailUsers(queryEmails)
 
             if (emailsNotSent.length) {
                 for (const email of emailsNotSent) {
@@ -71,7 +71,7 @@ export class EmailsNotSentTask implements IBackgroundTask {
                         }
 
                         // 1. If send email, delete this email to db
-                        await this._emailFromBusRepository.delete(email.id)
+                        await this._emailFromUsersRepository.delete(email.id)
 
                         // 2. If got here, it's because the action was successful.
                         this._logger.info(`Action for event send email successfully performed!`)
@@ -93,7 +93,7 @@ export class EmailsNotSentTask implements IBackgroundTask {
 
         const lang: string = email.lang ? email.lang : 'pt-BR'
         const nameList = email.to[0].name.split(' ')
-        await this._emailFromBusRepository.sendTemplate(
+        await this._emailFromUsersRepository.sendTemplate(
             'welcome',
             { name: email.to[0].name, email: email.to[0].email },
             {
@@ -109,7 +109,7 @@ export class EmailsNotSentTask implements IBackgroundTask {
 
     public async formatEmailResetPassword(email: any): Promise<void> {
         const lang: string = email.lang ? email.lang : 'pt-BR'
-        await this._emailFromBusRepository.sendTemplate(
+        await this._emailFromUsersRepository.sendTemplate(
             'reset-password',
             { name: email.to[0].name, email: email.to[0].email },
             {
@@ -124,7 +124,7 @@ export class EmailsNotSentTask implements IBackgroundTask {
 
     public async formatEmailUpdatePassword(email: any): Promise<void> {
         const lang: string = email.lang ? email.lang : 'pt-BR'
-        await this._emailFromBusRepository.sendTemplate(
+        await this._emailFromUsersRepository.sendTemplate(
             'updated-password',
             { name: email.to[0].name, email: email.to[0].email },
             {

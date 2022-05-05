@@ -4,7 +4,7 @@ import { JsonUtils } from '../utils/json.utils'
 import { Address } from './address'
 import { Email } from './email'
 
-export class EmailFromBus extends Email implements IJSONSerializable, IJSONDeserializable<EmailFromBus> {
+export class EmailFromUsers extends Email implements IJSONSerializable, IJSONDeserializable<EmailFromUsers> {
     private _action_url!: string
     private _password?: string
     private _type?: string
@@ -48,7 +48,7 @@ export class EmailFromBus extends Email implements IJSONSerializable, IJSONDeser
         }
     }
 
-    public fromJSON(json: any): EmailFromBus {
+    public fromJSON(json: any): EmailFromUsers {
         if (!json) return this
         if (JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)

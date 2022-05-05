@@ -1,35 +1,37 @@
 import nodeMailer from 'nodemailer'
 import { inject, injectable } from 'inversify'
 import { BaseRepository } from './base/base.repository'
-import { IEmailFromBusRepository } from '../../application/port/email.from.bus.repository.interface'
+import { IEmailFromUsersRepository } from '../../application/port/email.from.users.repository.interface'
 import { Identifier } from '../../di/identifiers'
 import { ILogger } from '../../utils/custom.logger'
 import { IEntityMapper } from '../port/entity.mapper.interface'
 import Template from 'email-templates'
 import path from 'path'
 import fs from 'fs'
-import { EmailFromBus } from '../../application/domain/model/email.from.bus'
-import { EmailFromBusEntity } from '../entity/email.from.bus.entity'
+import { EmailFromUsers } from '../../application/domain/model/email.from.users'
+import { EmailFromUsersEntity } from '../entity/email.from.users.entity'
 import { Query } from './query/query'
 import cryptojs from 'crypto-js'
 
 /**
  * Implementation of the email from bus repository.
  *
- * @implements {IEmailFromBusRepository}
+ * @implements {IEmailFromUsersRepository}
  */
 @injectable()
-export class EmailFromBusRepository extends BaseRepository<EmailFromBus, EmailFromBusEntity> implements IEmailFromBusRepository {
+export class EmailFromUsersRepository extends BaseRepository<EmailFromUsers, EmailFromUsersEntity>
+    implements IEmailFromUsersRepository {
+
     private readonly smtpTransport: any
     private connection: boolean
 
     constructor(
         @inject(Identifier.EMAIL_REPO_MODEL) readonly emailModel: any,
-        @inject(Identifier.EMAIL_FROM_BUS_ENTITY_MAPPER) readonly emailFromBusEntityMapper:
-            IEntityMapper<EmailFromBus, EmailFromBusEntity>,
+        @inject(Identifier.EMAIL_FROM_USERS_ENTITY_MAPPER) readonly emailFromUsersEntityMapper:
+            IEntityMapper<EmailFromUsers, EmailFromUsersEntity>,
         @inject(Identifier.LOGGER) readonly logger: ILogger
     ) {
-        super(emailModel, emailFromBusEntityMapper, logger)
+        super(emailModel, emailFromUsersEntityMapper, logger)
         this.smtpTransport = this.createSmtpTransport()
         this.connection = false
         this.smtpTransport.verify((err, success) => {
@@ -64,17 +66,17 @@ export class EmailFromBusRepository extends BaseRepository<EmailFromBus, EmailFr
                 if (!email.id) {
                     if (email.password) {
                         const passphrase = 'RegNutes@123'
-                        const newPasswordEncrypt =  cryptojs.AES.encrypt(email.password, passphrase).toString()
+                        const newPasswordEncrypt = cryptojs.AES.encrypt(email.password, passphrase).toString()
                         email.password = newPasswordEncrypt
                     }
-                    this.createEmailFromBus(email, name)
+                    this.createEmailFromUsers(email, name)
                 }
             }
         })
     }
 
-    public createEmailFromBus(item: EmailFromBus, type): Promise<EmailFromBus | undefined> {
-        return new Promise<EmailFromBus | undefined>((resolve, reject) => {
+    public createEmailFromUsers(item: EmailFromUsers, type): Promise<EmailFromUsers | undefined> {
+        return new Promise<EmailFromUsers | undefined>((resolve, reject) => {
             item.type = type
             this.Model.create(item)
                 .then((result) => {

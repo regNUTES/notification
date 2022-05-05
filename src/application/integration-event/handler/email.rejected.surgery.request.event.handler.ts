@@ -10,7 +10,7 @@ export class EmailRejectedSurgeryRequestEventHandler implements IIntegrationEven
 
     /**
      * Creates an instance of EmailRejectedSurgeryRequestEventHandler.
-     * @param _emailFromBusRepository 
+     * @param _emailRepository 
      * @param _logger 
      */
     constructor(

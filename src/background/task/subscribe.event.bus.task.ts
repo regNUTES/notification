@@ -62,7 +62,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
          */
         this._eventBus
             .subscribe(new EmailEvent('EmailWelcomeEvent'),
-                new EmailWelcomeEventHandler(DIContainer.get(Identifier.EMAIL_FROM_BUS_REPOSITORY), this._logger),
+                new EmailWelcomeEventHandler(DIContainer.get(Identifier.EMAIL_FROM_USERS_REPOSITORY), this._logger),
                 'emails.welcome')
             .then((result: boolean) => {
                 if (result) this._logger.info('Subscribe in EmailWelcomeEvent successful!')
@@ -76,7 +76,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
          */
         this._eventBus
             .subscribe(new EmailEvent('EmailResetPasswordEvent'),
-                new EmailResetPasswordEventHandler(DIContainer.get(Identifier.EMAIL_FROM_BUS_REPOSITORY), this._logger),
+                new EmailResetPasswordEventHandler(DIContainer.get(Identifier.EMAIL_FROM_USERS_REPOSITORY), this._logger),
                 'emails.reset-password')
             .then((result: boolean) => {
                 if (result) this._logger.info('Subscribe in EmailResetPasswordEvent successful!')
@@ -90,7 +90,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
          */
         this._eventBus
             .subscribe(new EmailEvent('EmailUpdatePasswordEvent'),
-                new EmailUpdatePasswordEventHandler(DIContainer.get(Identifier.EMAIL_FROM_BUS_REPOSITORY), this._logger),
+                new EmailUpdatePasswordEventHandler(DIContainer.get(Identifier.EMAIL_FROM_USERS_REPOSITORY), this._logger),
                 'emails.update-password')
             .then((result: boolean) => {
                 if (result) this._logger.info('Subscribe in EmailUpdatePasswordEvent successful!')

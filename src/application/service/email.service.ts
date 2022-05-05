@@ -10,8 +10,8 @@ import { Strings } from '../../utils/strings'
 import { EmailTemplate, EmailTemplateResources, EmailTemplateTypes } from '../domain/model/email.template'
 import { EmailTemplateValidator } from '../domain/validator/email.template.validator'
 import { EnumValuesValidator } from '../domain/validator/enum.values.validator'
-import { IEmailFromBusRepository } from '../port/email.from.bus.repository.interface'
-import { EmailFromBus } from '../domain/model/email.from.bus'
+import { IEmailFromUsersRepository } from '../port/email.from.users.repository.interface'
+import { EmailFromUsers } from '../domain/model/email.from.users'
 
 /**
  * Implementing email Service.
@@ -23,7 +23,7 @@ export class EmailService implements IEmailService {
 
     constructor(
         @inject(Identifier.EMAIL_REPOSITORY) private readonly _emailRepository: IEmailRepository,
-        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) private readonly _emailFromBusRepository: IEmailFromBusRepository,
+        @inject(Identifier.EMAIL_FROM_USERS_REPOSITORY) private readonly _emailFromUsersRepository: IEmailFromUsersRepository,
     ) {
     }
 
@@ -64,9 +64,9 @@ export class EmailService implements IEmailService {
         return this._emailRepository.find(query)
     }
 
-    public async getAllEmailBus(query: IQuery): Promise<Array<EmailFromBus>> {
-        const result: Array<EmailFromBus> = await this._emailFromBusRepository.find(query)
-        const arr: Array<EmailFromBus> = []
+    public async getAllEmailUsers(query: IQuery): Promise<Array<EmailFromUsers>> {
+        const result: Array<EmailFromUsers> = await this._emailFromUsersRepository.find(query)
+        const arr: Array<EmailFromUsers> = []
 
         for (const email of result) {
             arr.push(email.toJSON())

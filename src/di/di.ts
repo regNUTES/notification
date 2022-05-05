@@ -50,11 +50,11 @@ import { IConnectionFirebase } from '../infrastructure/port/connection.firebase.
 import { ConnectionFirebase } from '../infrastructure/firebase/connection.firebase'
 import { ConnectionFactoryFirebase } from '../infrastructure/firebase/connection.factory.firebase'
 import { EmailsNotSentTask } from '../background/task/email.not.sent.task'
-import { EmailFromBus } from '../application/domain/model/email.from.bus'
-import { EmailFromBusEntityMapper } from '../infrastructure/entity/mapper/email.from.bus.entity.mapper'
-import { EmailFromBusEntity } from '../infrastructure/entity/email.from.bus.entity'
-import { EmailFromBusRepository } from '../infrastructure/repository/email.from.bus.repository'
-import { IEmailFromBusRepository } from '../application/port/email.from.bus.repository.interface'
+import { EmailFromUsers } from '../application/domain/model/email.from.users'
+import { EmailFromUsersEntityMapper } from '../infrastructure/entity/mapper/email.from.users.entity.mapper'
+import { EmailFromUsersEntity } from '../infrastructure/entity/email.from.users.entity'
+import { EmailFromUsersRepository } from '../infrastructure/repository/email.from.users.repository'
+import { IEmailFromUsersRepository } from '../application/port/email.from.users.repository.interface'
 
 class IoC {
     private readonly _container: Container
@@ -107,8 +107,8 @@ class IoC {
         // Repositories
         this._container.bind<IEmailRepository>(Identifier.EMAIL_REPOSITORY)
             .to(EmailRepository).inSingletonScope()
-        this._container.bind<IEmailFromBusRepository>(Identifier.EMAIL_FROM_BUS_REPOSITORY)
-            .to(EmailFromBusRepository).inSingletonScope()
+        this._container.bind<IEmailFromUsersRepository>(Identifier.EMAIL_FROM_USERS_REPOSITORY)
+            .to(EmailFromUsersRepository).inSingletonScope()
         this._container.bind<IPushTokenRepository>(Identifier.PUSH_TOKEN_REPOSITORY)
             .to(PushTokenRepository).inSingletonScope()
         this._container.bind<IPushRepository>(Identifier.PUSH_REPOSITORY)
@@ -124,8 +124,8 @@ class IoC {
             .bind<IEntityMapper<Email, EmailEntity>>(Identifier.EMAIL_ENTITY_MAPPER)
             .to(EmailEntityMapper).inSingletonScope()
         this._container
-            .bind<IEntityMapper<EmailFromBus, EmailFromBusEntity>>(Identifier.EMAIL_FROM_BUS_ENTITY_MAPPER)
-            .to(EmailFromBusEntityMapper).inSingletonScope()
+            .bind<IEntityMapper<EmailFromUsers, EmailFromUsersEntity>>(Identifier.EMAIL_FROM_USERS_ENTITY_MAPPER)
+            .to(EmailFromUsersEntityMapper).inSingletonScope()
         this._container
             .bind<IEntityMapper<PushToken, PushTokenEntity>>(Identifier.PUSH_TOKEN_ENTITY_MAPPER)
             .to(PushTokenEntityMapper).inSingletonScope()

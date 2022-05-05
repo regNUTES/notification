@@ -10,14 +10,14 @@ import { EmailsNotSentTask } from './task/email.not.sent.task'
 import { DIContainer } from '../di/di'
 import { IEmailService } from '../application/port/email.service.interface'
 import { Default } from '../utils/default'
-import { IEmailFromBusRepository } from '../application/port/email.from.bus.repository.interface'
+import { IEmailFromUsersRepository } from '../application/port/email.from.users.repository.interface'
 
 @injectable()
 export class BackgroundService {
 
     private _emailsNotSentTask: IBackgroundTask = new EmailsNotSentTask(
         DIContainer.get<IEmailService>(Identifier.EMAIL_SERVICE),
-        DIContainer.get<IEmailFromBusRepository>(Identifier.EMAIL_FROM_BUS_REPOSITORY),
+        DIContainer.get<IEmailFromUsersRepository>(Identifier.EMAIL_FROM_USERS_REPOSITORY),
         this._logger,
         process.env.EXPRESSION_DONT_SENT_EMAILS || Default.EXPRESSION_DONT_SENT_EMAILS
     )

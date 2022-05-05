@@ -12,8 +12,8 @@ import Template from 'email-templates'
 import path from 'path'
 import fs from 'fs'
 import { EmailTemplate } from '../../application/domain/model/email.template'
-import { EmailFromBus } from '../../application/domain/model/email.from.bus'
-import { EmailFromBusEntity } from '../entity/email.from.bus.entity'
+import { EmailFromUsers } from '../../application/domain/model/email.from.users'
+import { EmailFromUsersEntity } from '../entity/email.from.users.entity'
 
 /**
  * Implementation of the email repository.
@@ -21,16 +21,16 @@ import { EmailFromBusEntity } from '../entity/email.from.bus.entity'
  * @implements {IEmailRepository}
  */
 @injectable()
-export class EmailRepository extends BaseRepository<EmailFromBus, EmailFromBusEntity> implements IEmailRepository {
+export class EmailRepository extends BaseRepository<EmailFromUsers, EmailFromUsersEntity> implements IEmailRepository {
     private readonly smtpTransport: any
 
     constructor(
         @inject(Identifier.EMAIL_REPO_MODEL) readonly emailModel: any,
-        @inject(Identifier.EMAIL_FROM_BUS_ENTITY_MAPPER) readonly emailFromBusMapper:
-            IEntityMapper<EmailFromBus, EmailFromBusEntity>,
+        @inject(Identifier.EMAIL_FROM_USERS_ENTITY_MAPPER) readonly emailFromUsersMapper:
+            IEntityMapper<EmailFromUsers, EmailFromUsersEntity>,
         @inject(Identifier.LOGGER) readonly logger: ILogger
     ) {
-        super(emailModel, emailFromBusMapper, logger)
+        super(emailModel, emailFromUsersMapper, logger)
         this.smtpTransport = this.createSmtpTransport()
         this.smtpTransport.verify((err, success) => {
             if (err) {
@@ -47,7 +47,7 @@ export class EmailRepository extends BaseRepository<EmailFromBus, EmailFromBusEn
      * @param email
      * @return Promise<Email>
      */
-    public async send(email: EmailFromBus): Promise<EmailFromBus | undefined> {
+    public async send(email: EmailFromUsers): Promise<EmailFromUsers | undefined> {
         email.from = new Address(process.env.SENDER_NAME, process.env.ORIGIN_EMAIL)
         const emailSendNodeMailer: any = this.convertEmailToNodeMailer(email)
         try {
@@ -66,7 +66,7 @@ export class EmailRepository extends BaseRepository<EmailFromBus, EmailFromBusEn
         return super.create(email)
     }
 
-    public sendTemplate(name: string, to: any, data: any, email: EmailFromBus, lang?: string): Promise<void> {
+    public sendTemplate(name: string, to: any, data: any, email: EmailFromUsers, lang?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.getEmailTemplateInstance(name)
                 .send({

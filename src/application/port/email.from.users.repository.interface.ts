@@ -1,4 +1,4 @@
-import { EmailFromBus } from '../domain/model/email.from.bus'
+import { EmailFromUsers } from '../domain/model/email.from.users'
 import { IRepository } from './repository.interface'
 
 /**
@@ -8,7 +8,7 @@ import { IRepository } from './repository.interface'
  * @see {@link PhysicalActivityRepository} for further information.
  * @extends {IRepository<Email>}
  */
-export interface IEmailFromBusRepository extends IRepository<EmailFromBus> {
+export interface IEmailFromUsersRepository extends IRepository<EmailFromUsers> {
 
     /**
      * Send email using a predefined template.
@@ -20,5 +20,5 @@ export interface IEmailFromBusRepository extends IRepository<EmailFromBus> {
      * @return {Promise<void>}
      * @throws {ValidationException | RepositoryException}
      */
-    sendTemplate(name: string, to: any, data: any, email: EmailFromBus, lang?: string): Promise<void>
+    sendTemplate(name: string, to: any, data: any, email: EmailFromUsers, lang?: string): Promise<void>
 }

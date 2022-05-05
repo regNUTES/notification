@@ -4,7 +4,7 @@ import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
 import { EmailResetPasswordValidator } from '../../domain/validator/email.reset.password.validator'
-import { IEmailFromBusRepository } from '../../port/email.from.bus.repository.interface'
+import { IEmailFromUsersRepository } from '../../port/email.from.users.repository.interface'
 
 export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
@@ -14,7 +14,7 @@ export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<
      * @param _logger
      */
     constructor(
-        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailFromBusRepository,
+        @inject(Identifier.EMAIL_FROM_USERS_REPOSITORY) public readonly _emailFromUsersRepository: IEmailFromUsersRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
@@ -28,7 +28,7 @@ export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<
 
             // 2 Configure email and send
             const lang: string = email.lang ? email.lang : 'pt-BR'
-            await this._emailFromBusRepository.sendTemplate(
+            await this._emailFromUsersRepository.sendTemplate(
                 'reset-password',
                 { name: email.to.name, email: email.to.email },
                 {

@@ -1,18 +1,18 @@
 import { injectable } from 'inversify'
 import { Address } from '../../../application/domain/model/address'
-import { EmailFromBus } from '../../../application/domain/model/email.from.bus'
+import { EmailFromUsers } from '../../../application/domain/model/email.from.users'
 import { IEntityMapper } from '../../port/entity.mapper.interface'
-import { EmailFromBusEntity } from '../email.from.bus.entity'
+import { EmailFromUsersEntity } from '../email.from.users.entity'
 
 @injectable()
-export class EmailFromBusEntityMapper implements IEntityMapper<EmailFromBus, EmailFromBusEntity> {
+export class EmailFromUsersEntityMapper implements IEntityMapper<EmailFromUsers, EmailFromUsersEntity> {
     public transform(item: any): any {
-        if (item instanceof EmailFromBus) return this.modelToModelEntity(item)
+        if (item instanceof EmailFromUsers) return this.modelToModelEntity(item)
         return this.jsonToModel(item) // json
     }
 
-    public modelToModelEntity(item: EmailFromBus): EmailFromBusEntity {
-        const result: EmailFromBusEntity = new EmailFromBusEntity()
+    public modelToModelEntity(item: EmailFromUsers): EmailFromUsersEntity {
+        const result: EmailFromUsersEntity = new EmailFromUsersEntity()
 
         if (item.id) result.id = item.id
         result.to = item.to ? item.to.map(elem => elem.toJSON()) : []
@@ -22,8 +22,8 @@ export class EmailFromBusEntityMapper implements IEntityMapper<EmailFromBus, Ema
         return result
     }
 
-    public jsonToModel(json: any): EmailFromBus {
-        const result: EmailFromBus = new EmailFromBus()
+    public jsonToModel(json: any): EmailFromUsers {
+        const result: EmailFromUsers = new EmailFromUsers()
 
         if (!json) return result
 
