@@ -22,6 +22,7 @@
     // Repositories
     public static readonly EMAIL_REPOSITORY: any = Symbol.for('EmailRepository')
     public static readonly EMAIL_FROM_USERS_REPOSITORY: any = Symbol.for('EmailFromUsersRepository')
+    public static readonly EMAIL_SURGERY_REQUEST_REPOSITORY: any = Symbol.for('EmailSurgeryRequestRepository')
     public static readonly PUSH_TOKEN_REPOSITORY: any = Symbol.for('PushTokenRepository')
     public static readonly PUSH_REPOSITORY: any = Symbol.for('PushRepository')
 
@@ -33,6 +34,7 @@
     // Mappers
     public static readonly EMAIL_ENTITY_MAPPER: any = Symbol.for('EmailEntityMapper')
     public static readonly EMAIL_FROM_USERS_ENTITY_MAPPER: any = Symbol.for('EmailFromUsersEntityMapper')
+    public static readonly EMAIL_SURGERY_REQUEST_ENTITY_MAPPER: any = Symbol.for('EmailSurgeryRequestEntityMapper')
     public static readonly PUSH_TOKEN_ENTITY_MAPPER: any = Symbol.for('PushTokenEntityMapper')
     public static readonly PUSH_ENTITY_MAPPER: any = Symbol.for('PushEntityMapper')
 

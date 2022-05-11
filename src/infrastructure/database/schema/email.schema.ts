@@ -19,6 +19,12 @@ const emailSchema = new Mongoose.Schema({
         html: { type: String },
         action_url: { type: String },
         password: { type: String },
+        request_code: { type: String},
+        municipality: { type: String},
+        health_unit: { type: String},
+        surgery: { type: String},
+        surgery_scheduling_date: { type: String},
+        operation: { type: String},
         type: { type: String },
         attachments: [{
             filename: { type: String },

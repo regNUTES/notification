@@ -55,6 +55,11 @@ import { EmailFromUsersEntityMapper } from '../infrastructure/entity/mapper/emai
 import { EmailFromUsersEntity } from '../infrastructure/entity/email.from.users.entity'
 import { EmailFromUsersRepository } from '../infrastructure/repository/email.from.users.repository'
 import { IEmailFromUsersRepository } from '../application/port/email.from.users.repository.interface'
+import { EmailSurgeryRequestRepository } from '../infrastructure/repository/email.surgery.request.repository'
+import { IEmailSurgeryRequestRepository } from '../application/port/email.surgery.request.repository.interface'
+import { EmailSurgeryRequest } from '../application/domain/model/email.surgery.request'
+import { EmailSurgeryRequestEntity } from '../infrastructure/entity/email.surgery.request.entity'
+import { EmailSurgeryRequestEntityMapper } from '../infrastructure/entity/mapper/email.surgery.request.entity.mapper'
 
 class IoC {
     private readonly _container: Container
@@ -109,6 +114,8 @@ class IoC {
             .to(EmailRepository).inSingletonScope()
         this._container.bind<IEmailFromUsersRepository>(Identifier.EMAIL_FROM_USERS_REPOSITORY)
             .to(EmailFromUsersRepository).inSingletonScope()
+        this._container.bind<IEmailSurgeryRequestRepository>(Identifier.EMAIL_SURGERY_REQUEST_REPOSITORY)
+            .to(EmailSurgeryRequestRepository).inSingletonScope()
         this._container.bind<IPushTokenRepository>(Identifier.PUSH_TOKEN_REPOSITORY)
             .to(PushTokenRepository).inSingletonScope()
         this._container.bind<IPushRepository>(Identifier.PUSH_REPOSITORY)
@@ -126,6 +133,9 @@ class IoC {
         this._container
             .bind<IEntityMapper<EmailFromUsers, EmailFromUsersEntity>>(Identifier.EMAIL_FROM_USERS_ENTITY_MAPPER)
             .to(EmailFromUsersEntityMapper).inSingletonScope()
+        this._container
+            .bind<IEntityMapper<EmailSurgeryRequest, EmailSurgeryRequestEntity>>(Identifier.EMAIL_SURGERY_REQUEST_ENTITY_MAPPER)
+            .to(EmailSurgeryRequestEntityMapper).inSingletonScope()
         this._container
             .bind<IEntityMapper<PushToken, PushTokenEntity>>(Identifier.PUSH_TOKEN_ENTITY_MAPPER)
             .to(PushTokenEntityMapper).inSingletonScope()

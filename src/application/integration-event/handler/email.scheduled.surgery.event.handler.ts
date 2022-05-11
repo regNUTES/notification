@@ -2,10 +2,9 @@ import { inject } from 'inversify'
 import { Identifier } from '../../../di/identifiers'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailScheduledSurgeryValidator } from '../../domain/validator/email.scheduled.surgery.validator'
-import { IEmailRepository } from '../../port/email.repository.interface'
 import { EmailEvent } from '../event/email.event'
 import { IIntegrationEventHandler } from './integration.event.handler.interface'
-
+import { IEmailSurgeryRequestRepository } from '../../port/email.surgery.request.repository.interface'
 
 export class EmailScheduledSurgeryEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
@@ -15,7 +14,9 @@ export class EmailScheduledSurgeryEventHandler implements IIntegrationEventHandl
      * 
      */
     constructor(
-        @inject(Identifier.EMAIL_REPOSITORY) private readonly _emailRepository: IEmailRepository,
+        @inject(
+            Identifier.EMAIL_SURGERY_REQUEST_REPOSITORY
+        ) private readonly _emailSurgeryRequestRepository: IEmailSurgeryRequestRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
@@ -30,7 +31,7 @@ export class EmailScheduledSurgeryEventHandler implements IIntegrationEventHandl
             // 2 Configure email and send
             const nameList = email.to.name.split(' ')
 
-            await this._emailRepository.sendTemplate(
+            await this._emailSurgeryRequestRepository.sendTemplate(
                 email.operation,
                 { name: email.to.name, email: email.to.email },
                 {

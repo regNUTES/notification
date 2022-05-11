@@ -2,9 +2,9 @@ import { inject } from 'inversify'
 import { Identifier } from '../../../di/identifiers'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailRejectedRequestValidator } from '../../domain/validator/email.rejected.request.validator'
-import { IEmailRepository } from '../../port/email.repository.interface'
 import { EmailEvent } from '../event/email.event'
 import { IIntegrationEventHandler } from './integration.event.handler.interface'
+import { IEmailSurgeryRequestRepository } from '../../port/email.surgery.request.repository.interface'
 
 export class EmailRejectedSurgeryRequestEventHandler implements IIntegrationEventHandler<EmailEvent> {
 
@@ -14,7 +14,9 @@ export class EmailRejectedSurgeryRequestEventHandler implements IIntegrationEven
      * @param _logger 
      */
     constructor(
-        @inject(Identifier.EMAIL_REPOSITORY) private readonly _emailRepository: IEmailRepository,
+        @inject(
+            Identifier.EMAIL_SURGERY_REQUEST_REPOSITORY
+        ) private readonly _emailSurgeryRequestRepository: IEmailSurgeryRequestRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
@@ -31,7 +33,7 @@ export class EmailRejectedSurgeryRequestEventHandler implements IIntegrationEven
             const healthUnitName: string = email.data.health_unit ? email.data.health_unit : '_'
             const surgeryName: string = email.data.surgery ? email.data.surgery : '_'
 
-            await this._emailRepository.sendTemplate(
+            await this._emailSurgeryRequestRepository.sendTemplate(
                 email.operation,
                 { name: email.to.name, email: email.to.email },
                 {
