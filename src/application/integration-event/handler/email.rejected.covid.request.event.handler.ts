@@ -2,11 +2,9 @@ import { inject } from 'inversify'
 import { Identifier } from '../../../di/identifiers'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailRejectedCovidRequestValidator } from '../../domain/validator/email.reject.covid.request.validator'
-import { IEmailRepository } from '../../port/email.repository.interface'
+import { IEmailCovidRequestRepository } from '../../port/email.covid.request.repository.interface'
 import { EmailEvent } from '../event/email.event'
 import { IIntegrationEventHandler } from './integration.event.handler.interface'
-
-
 
 export class EmailRejectedCovidRequestEventHandler implements IIntegrationEventHandler<EmailEvent> {
 
@@ -16,7 +14,7 @@ export class EmailRejectedCovidRequestEventHandler implements IIntegrationEventH
      * @param _logger 
      */
     constructor(
-        @inject(Identifier.EMAIL_REPOSITORY) private readonly _emailRepository: IEmailRepository,
+        @inject(Identifier.EMAIL_COVID_REQUEST_REPOSITORY) private readonly _emailCovidRepository: IEmailCovidRequestRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
@@ -34,7 +32,7 @@ export class EmailRejectedCovidRequestEventHandler implements IIntegrationEventH
             const bedCode: string = email.data.bed_code ? email.data.bed_code : '_'
             const bedName: string = email.data.bed ? email.data.bed : '_'
 
-            await this._emailRepository.sendTemplate(
+            await this._emailCovidRepository.sendTemplate(
                 email.operation,
                 { name: email.to.name, email: email.to.email },
                 {

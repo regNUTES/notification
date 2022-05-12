@@ -60,6 +60,11 @@ import { IEmailSurgeryRequestRepository } from '../application/port/email.surger
 import { EmailSurgeryRequest } from '../application/domain/model/email.surgery.request'
 import { EmailSurgeryRequestEntity } from '../infrastructure/entity/email.surgery.request.entity'
 import { EmailSurgeryRequestEntityMapper } from '../infrastructure/entity/mapper/email.surgery.request.entity.mapper'
+import { IEmailCovidRequestRepository } from '../application/port/email.covid.request.repository.interface'
+import { EmailCovidRequestRepository } from '../infrastructure/repository/email.covid.request.repository'
+import { EmailCovidRequest } from '../application/domain/model/email.covid.request'
+import { EmailCovidRequestEntity } from '../infrastructure/entity/email.covid.request.entity'
+import { EmailCovidRequestEntityMapper } from '../infrastructure/entity/mapper/email.covid.request.entity.mapper'
 
 class IoC {
     private readonly _container: Container
@@ -116,6 +121,8 @@ class IoC {
             .to(EmailFromUsersRepository).inSingletonScope()
         this._container.bind<IEmailSurgeryRequestRepository>(Identifier.EMAIL_SURGERY_REQUEST_REPOSITORY)
             .to(EmailSurgeryRequestRepository).inSingletonScope()
+        this._container.bind<IEmailCovidRequestRepository>(Identifier.EMAIL_COVID_REQUEST_REPOSITORY)
+            .to(EmailCovidRequestRepository).inSingletonScope()
         this._container.bind<IPushTokenRepository>(Identifier.PUSH_TOKEN_REPOSITORY)
             .to(PushTokenRepository).inSingletonScope()
         this._container.bind<IPushRepository>(Identifier.PUSH_REPOSITORY)
@@ -136,6 +143,9 @@ class IoC {
         this._container
             .bind<IEntityMapper<EmailSurgeryRequest, EmailSurgeryRequestEntity>>(Identifier.EMAIL_SURGERY_REQUEST_ENTITY_MAPPER)
             .to(EmailSurgeryRequestEntityMapper).inSingletonScope()
+        this._container
+            .bind<IEntityMapper<EmailCovidRequest, EmailCovidRequestEntity>>(Identifier.EMAIL_COVID_REQUEST_ENTITY_MAPPER)
+            .to(EmailCovidRequestEntityMapper).inSingletonScope()
         this._container
             .bind<IEntityMapper<PushToken, PushTokenEntity>>(Identifier.PUSH_TOKEN_ENTITY_MAPPER)
             .to(PushTokenEntityMapper).inSingletonScope()

@@ -24,6 +24,8 @@ const emailSchema = new Mongoose.Schema({
         health_unit: { type: String},
         surgery: { type: String},
         surgery_scheduling_date: { type: String},
+        bed_code: { type: String},
+        bed: { type: String},
         operation: { type: String},
         type: { type: String },
         attachments: [{
