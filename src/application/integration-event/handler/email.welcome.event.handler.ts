@@ -1,20 +1,21 @@
 import { inject } from 'inversify'
 import { Identifier } from '../../../di/identifiers'
-import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
-import { EmailEvent } from '../event/email.event'
-import { IEmailRepository } from '../../port/email.repository.interface'
+import { Strings } from '../../../utils/strings'
 import { EmailWelcomeValidator } from '../../domain/validator/email.welcome.validator'
+import { IEmailFromBusRepository } from '../../port/email.from.bus.repository.interface'
+import { EmailEvent } from '../event/email.event'
+import { IIntegrationEventHandler } from './integration.event.handler.interface'
 
 export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
      * Creates an instance of EmailWelcomeEventHandler.
      *
-     * @param _emailRepository
+     * @param _emailFromBusRepository
      * @param _logger
      */
     constructor(
-        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailRepository,
+        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailFromBusRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
@@ -39,6 +40,7 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
                     action_url: email.action_url
                 },
                 email,
+                Strings.EMAIL.REGNUTES_SENDER_NAME,
                 lang
             )
 

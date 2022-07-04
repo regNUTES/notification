@@ -16,9 +16,11 @@ export interface IEmailFromBusRepository extends IRepository<EmailFromBus> {
      * @param name
      * @param to
      * @param data
+     * @param email
+     * @param senderName
      * @param lang
      * @return {Promise<void>}
      * @throws {ValidationException | RepositoryException}
      */
-    sendTemplate(name: string, to: any, data: any, email: EmailFromBus, lang?: string): Promise<void>
+    sendTemplate(name: string, to: any, data: any, email: EmailFromBus, senderName: string, lang?: string): Promise<void>
 }

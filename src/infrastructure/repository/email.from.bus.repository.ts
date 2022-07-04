@@ -43,7 +43,7 @@ export class EmailFromBusRepository extends BaseRepository<EmailFromBus, EmailFr
         })
     }
 
-    public sendTemplate(name: string, to: any, data: any, email: any, lang?: string): Promise<void> {
+    public sendTemplate(name: string, to: any, data: any, email: EmailFromBus, senderName: string, lang?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.getEmailTemplateInstance(name)
                 .send({
@@ -51,7 +51,7 @@ export class EmailFromBusRepository extends BaseRepository<EmailFromBus, EmailFr
                     message: {
                         to: [{ name: to.email, address: to.email }],
                         from: {
-                            name: process.env.SENDER_NAME,
+                            name: senderName,
                             address: process.env.ORIGIN_EMAIL
                         }
                     },

@@ -14,6 +14,9 @@ import { UserDeleteEvent } from '../../application/integration-event/event/user.
 import { UserDeleteEventHandler } from '../../application/integration-event/handler/user.delete.event.handler'
 import { PushSendEvent } from '../../application/integration-event/event/push.send.event'
 import { PushSendEventHandler } from '../../application/integration-event/handler/push.send.event.handler'
+import { EmailOperaPBWelcomeEventHandler } from '../../application/integration-event/handler/email.operapb.welcome.event.handler'
+import { EmailOperaPBUpdateAuthPatientEventHandler } from '../../application/integration-event/handler/email.operapb.update.auth.patient.event.handler'
+import { EmailOperaPBUpdatePasswordEventHandler } from '../../application/integration-event/handler/email.operapb.update.password.event.handler'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -93,6 +96,48 @@ export class SubscribeEventBusTask implements IBackgroundTask {
             })
             .catch(err => {
                 this._logger.error(`Error in Subscribe EmailUpdatePasswordEvent! ${err.message}`)
+            })
+
+        /**
+         * Subscribe in EmailOperaPBWelcomeEvent
+         */
+        this._eventBus
+            .subscribe(new EmailEvent('EmailOperaPBWelcomeEvent'),
+                new EmailOperaPBWelcomeEventHandler(DIContainer.get(Identifier.EMAIL_FROM_BUS_REPOSITORY), this._logger),
+                'emails.operapb-welcome')
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in EmailOperaPBWelcomeEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe EmailOperaPBWelcomeEvent! ${err.message}`)
+            })
+
+        /**
+         * Subscribe in EmailOperaPBUpdateAuthPatientEvent
+         */
+        this._eventBus
+            .subscribe(new EmailEvent('EmailOperaPBUpdateAuthPatientEvent'),
+                new EmailOperaPBUpdateAuthPatientEventHandler(DIContainer.get(Identifier.EMAIL_FROM_BUS_REPOSITORY),
+                    this._logger), 'emails.operapb-update-auth-patient')
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in EmailOperaPBUpdateAuthPatientEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe EmailOperaPBUpdateAuthPatientEvent! ${err.message}`)
+            })
+
+        /**
+         * Subscribe in EmailOperaPBUpdatePasswordEvent
+         */
+        this._eventBus
+            .subscribe(new EmailEvent('EmailOperaPBUpdatePasswordEvent'),
+                new EmailOperaPBUpdatePasswordEventHandler(DIContainer.get(Identifier.EMAIL_FROM_BUS_REPOSITORY), this._logger),
+                'emails.operapb-update-password')
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in EmailOperaPBUpdatePasswordEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe EmailOperaPBUpdatePasswordEvent! ${err.message}`)
             })
 
         /**

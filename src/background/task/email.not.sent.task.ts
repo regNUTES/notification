@@ -8,6 +8,7 @@ import { Query } from '../../infrastructure/repository/query/query'
 import { IEmailService } from '../../application/port/email.service.interface'
 import { IEmailFromBusRepository } from '../../application/port/email.from.bus.repository.interface'
 import cryptojs from 'crypto-js'
+import { Strings } from '../../utils/strings'
 
 /**
  * Task responsible for identifying not sented emails users and try again them.
@@ -103,6 +104,7 @@ export class EmailsNotSentTask implements IBackgroundTask {
                 action_url: email.action_url
             },
             email,
+            Strings.EMAIL.REGNUTES_SENDER_NAME,
             lang
         )
     }
@@ -118,6 +120,7 @@ export class EmailsNotSentTask implements IBackgroundTask {
                 action_url: email.action_url
             },
             email,
+            Strings.EMAIL.REGNUTES_SENDER_NAME,
             lang
         )
     }
@@ -132,6 +135,7 @@ export class EmailsNotSentTask implements IBackgroundTask {
                 email: email.to[0].email,
             },
             email,
+            Strings.EMAIL.REGNUTES_SENDER_NAME,
             lang
         )
     }

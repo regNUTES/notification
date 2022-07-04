@@ -31,7 +31,7 @@ export class EmailService implements IEmailService {
         try {
             EmailSendValidator.validate(email)
 
-            return this._emailRepository.send(email)
+            return this._emailRepository.send(email, Strings.EMAIL.REGNUTES_SENDER_NAME)
         } catch (e) {
             return Promise.reject(e)
         }
