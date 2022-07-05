@@ -1,20 +1,21 @@
 import { inject } from 'inversify'
 import { Identifier } from '../../../di/identifiers'
-import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
-import { EmailEvent } from '../event/email.event'
-import { IEmailRepository } from '../../port/email.repository.interface'
+import { Strings } from '../../../utils/strings'
 import { EmailUpdatePasswordValidator } from '../../domain/validator/email.update.password.validator'
+import { IEmailFromBusRepository } from '../../port/email.from.bus.repository.interface'
+import { EmailEvent } from '../event/email.event'
+import { IIntegrationEventHandler } from './integration.event.handler.interface'
 
 export class EmailUpdatePasswordEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
      * Creates an instance of EmailUpdatePasswordEventHandler.
      *
-     * @param _emailRepository
+     * @param _emailFromBusRepository
      * @param _logger
      */
     constructor(
-        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailRepository,
+        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailFromBusRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
@@ -36,6 +37,7 @@ export class EmailUpdatePasswordEventHandler implements IIntegrationEventHandler
                     email: email.to.email
                 },
                 email,
+                Strings.EMAIL.REGNUTES_SENDER_NAME,
                 lang
             )
             // 3. If got here, it's because the action was successful.

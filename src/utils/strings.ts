@@ -19,7 +19,9 @@ export abstract class Strings {
 
     public static readonly EMAIL: any = {
         NOT_FOUND: 'Email not found!',
-        NOT_FOUND_DESCRIPTION: 'Email not found or already removed. A new operation for the same resource is not required.'
+        NOT_FOUND_DESCRIPTION: 'Email not found or already removed. A new operation for the same resource is not required.',
+        REGNUTES_SENDER_NAME: 'regNUTES',
+        OPERAPB_SENDER_NAME: 'Opera PB'
     }
 
     public static readonly EMAIL_TEMPLATE: any = {
