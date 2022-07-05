@@ -6,6 +6,7 @@ import { EmailEvent } from '../event/email.event'
 import { IEmailRepository } from '../../port/email.repository.interface'
 import { EmailSendValidator } from '../../domain/validator/email.send.validator'
 import { Email } from '../../domain/model/email'
+import { Strings } from '../../../utils/strings'
 
 export class EmailSendEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
@@ -27,7 +28,7 @@ export class EmailSendEventHandler implements IIntegrationEventHandler<EmailEven
 
             // 2. Validate object based on create action.
             EmailSendValidator.validate(email)
-            await this._emailRepository.send(email)
+            await this._emailRepository.send(email, Strings.EMAIL.REGNUTES_SENDER_NAME)
 
             // 3. If got here, it's because the action was successful.
             this._logger.info(`Action for event ${event.event_name} successfully performed!`)

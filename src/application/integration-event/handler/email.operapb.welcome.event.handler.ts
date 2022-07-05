@@ -1,21 +1,21 @@
 import { inject } from 'inversify'
 import { Identifier } from '../../../di/identifiers'
-import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
-import { EmailEvent } from '../event/email.event'
-import { IEmailRepository } from '../../port/email.repository.interface'
-import { EmailPilotStudyDataValidator } from '../../domain/validator/email.pilot.study.data.validator'
 import { Strings } from '../../../utils/strings'
+import { EmailOperaPBWelcomeValidator } from '../../domain/validator/email.operapb.welcome.validator'
+import { IEmailFromBusRepository } from '../../port/email.from.bus.repository.interface'
+import { EmailEvent } from '../event/email.event'
+import { IIntegrationEventHandler } from './integration.event.handler.interface'
 
-export class EmailPilotStudyDataEventHandler implements IIntegrationEventHandler<EmailEvent> {
+export class EmailOperaPBWelcomeEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
-     * Creates an instance of EmailPilotStudyDataEventHandler.
+     * Creates an instance of EmailOperaPBWelcomeEventHandler.
      *
      * @param _emailRepository
      * @param _logger
      */
     constructor(
-        @inject(Identifier.EMAIL_REPOSITORY) public readonly _emailRepository: IEmailRepository,
+        @inject(Identifier.EMAIL_FROM_BUS_REPOSITORY) public readonly _emailFromBusRepository: IEmailFromBusRepository,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
@@ -25,27 +25,25 @@ export class EmailPilotStudyDataEventHandler implements IIntegrationEventHandler
             const email: any = event.email
 
             // 1. Validate object based on create action.
-            EmailPilotStudyDataValidator.validate(email)
+            EmailOperaPBWelcomeValidator.validate(email)
 
             // 2 Configure email and send
             const lang: string = email.lang ? email.lang : 'pt-BR'
-            await this._emailRepository.sendTemplateAndAttachment(
-                'pilot-study-data',
+            const nameList = email.to.name.split(' ')
+            await this._emailFromBusRepository.sendTemplate(
+                'operapb-welcome',
                 { name: email.to.name, email: email.to.email },
-                email.attachments.map(item => {
-                    item.contentType = item.content_type
-                    delete item.content_type
-                    return item
-                }),
                 {
-                    name: email.to.name,
-                    pilot_study: email.pilot_study,
-                    request_date: new Date(email.request_date).toString(),
+                    name: `${nameList[0]} ${(nameList.length > 1 ? nameList[1] : '')}`,
+                    email: email.to.email,
+                    password: email.password ? email.password : undefined,
                     action_url: email.action_url
                 },
-                Strings.EMAIL.REGNUTES_SENDER_NAME,
+                email,
+                Strings.EMAIL.OPERAPB_SENDER_NAME,
                 lang
             )
+
             // 3. If got here, it's because the action was successful.
             this._logger.info(`Action for event ${event.event_name} successfully performed!`)
         } catch (err: any) {
