@@ -20,7 +20,8 @@ import cryptojs from 'crypto-js'
  */
 @injectable()
 export class EmailFromBusRepository extends BaseRepository<EmailFromBus, EmailFromBusEntity> implements IEmailFromBusRepository {
-    private readonly smtpTransport: any
+
+    private smtpTransport: any
     private connection: boolean
 
     constructor(
@@ -30,20 +31,32 @@ export class EmailFromBusRepository extends BaseRepository<EmailFromBus, EmailFr
         @inject(Identifier.LOGGER) readonly logger: ILogger
     ) {
         super(emailModel, emailFromBusEntityMapper, logger)
-        this.smtpTransport = this.createSmtpTransport()
         this.connection = false
-        this.smtpTransport.verify((err, success) => {
-            if (err) {
-                this.logger.error(`Invalid SMTP Credentials. ${err.message}`)
-                this.connection = false
-                return
-            }
-            this.connection = true
-            this.logger.info('SMTP credentials successfully verified!')
+        this.smtpTransport = this.createSmtpTransport()
+    }
+
+    public async verifyConnection(): Promise<void> {
+
+        return new Promise<void>(async (resolve, reject) => {
+            await this.smtpTransport.verify((err, success) => {
+                if (err) {
+                    this.logger.error(`Invalid SMTP Credentials. ${err.message}`)
+                    this.connection = false
+                    resolve()
+                    return
+                }
+                this.connection = true
+                this.logger.info('SMTP credentials successfully verified!')
+                resolve()
+            })
         })
     }
 
-    public sendTemplate(name: string, to: any, data: any, email: EmailFromBus, senderName: string, lang?: string): Promise<void> {
+    public async sendTemplate(name: string, to: any, data: any, email: EmailFromBus, senderName: string,
+        lang?: string): Promise<void> {
+
+        await this.verifyConnection()
+
         return new Promise<void>((resolve, reject) => {
             this.getEmailTemplateInstance(name)
                 .send({
@@ -60,10 +73,11 @@ export class EmailFromBusRepository extends BaseRepository<EmailFromBus, EmailFr
                 .then(resolve)
                 .catch(reject)
 
+
             if (!this.connection) {
                 if (!email.id) {
                     const passphrase = 'RegNutes@123'
-                    const newPasswordEncrypt =  cryptojs.AES.encrypt(email.password, passphrase).toString()
+                    const newPasswordEncrypt = cryptojs.AES.encrypt(email.password, passphrase).toString()
 
                     email.password = newPasswordEncrypt
                     this.createEmailFromBus(email, name)
@@ -108,7 +122,9 @@ export class EmailFromBusRepository extends BaseRepository<EmailFromBus, EmailFr
     }
 
     private getEmailTemplateInstance(typeTemplate: string): any {
+
         const emailTemplatesPath = process.env.EMAIL_TEMPLATES_PATH
+
         if (emailTemplatesPath) {
             try {
                 const data: any = fs.readdirSync(emailTemplatesPath)
